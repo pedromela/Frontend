@@ -9,6 +9,9 @@
     "lint": "eslint . --ext .ts",
     "e2e": "ng e2e"
   },
+  "engines": {
+	"node": "12.18.4"
+  },
   "private": true,
   "dependencies": {
     "3box": "^1.19.1",
