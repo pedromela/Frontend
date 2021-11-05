@@ -1,0 +1,4 @@
+<app-strategy-edit (strategyDataEvent)="onSubmit($event)" [formModel]="data"></app-strategy-edit>
+<div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()" [mat-dialog-close]="data.id">Close</button>
+</div>

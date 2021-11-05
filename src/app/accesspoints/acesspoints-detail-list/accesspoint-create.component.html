@@ -1,0 +1,67 @@
+  <mat-drawer-container>
+	<mat-drawer #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [opened]="!mobileQuery.matches" [ngClass]="{'sidenav-collapsed': collapsedNav && !mobileQuery.matches}">
+		<div class="sidenav-header">
+			<span>{{collapsedNav && !mobileQuery.matches ? 'M' : 'MegaLadon'}}</span>
+		</div>
+    <app-navoptions></app-navoptions>
+	</mat-drawer>
+	<mat-drawer-content [ngClass]="{'sidenav-collapsed': collapsedNav && !mobileQuery.matches}">
+		<mat-toolbar>
+			<button mat-icon-button (click)="mobileQuery.matches ? snav.toggle() : collapsedNav = !collapsedNav">
+        <mat-icon>menu</mat-icon>
+      </button>
+		</mat-toolbar>
+    <div class="container center">
+      <div class="card-grid row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card__header">
+              <h1 class="display-4 text-center">Access point</h1>
+              <hr>
+            </div>
+            <div class="card__content card__content_nopadding">
+                <form #form='ngForm' class="mb-4" autocomplete="off" (submit)="onSubmit(form)">
+                    <div class="form-group">
+                        <label>Exchange</label>
+                        <br>
+                        <mat-form-field>
+                          <mat-select #Exchange="ngModel" name="Exchange" [(ngModel)]="selectedBroker">
+                            <mat-option class="example-radio-button" *ngFor="let broker of brokers$ | async" [value]="broker">
+                              {{broker.name}} {{broker.brokerType}}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="form-group">
+                      <label>Name</label>
+                      <input class="form-control" #Name="ngModel" name="Name" [(ngModel)]="formModel.name" required>
+                    </div>
+                    <div class="form-group" *ngIf="selectedBroker && selectedBroker.authMode == 1">
+                      <label>Api Public Key</label>
+                      <input class="form-control" #PublicKey="ngModel" name="PublicKey" [(ngModel)]="formModel.publicKey" required>
+                    </div>
+                    <div class="form-group" *ngIf="selectedBroker && selectedBroker.authMode == 1">
+                        <label>Api Private Key</label>
+                        <input type="password" class="form-control" #PrivateKey="ngModel" name="PrivateKey" [(ngModel)]="formModel.privateKey" required>
+                    </div>
+                    <div class="form-group" *ngIf="selectedBroker && selectedBroker.authMode == 2">
+                      <label>Account</label>
+                      <input class="form-control" #PublicKey="ngModel" name="Account" [(ngModel)]="formModel.account" required>
+                    </div>
+                    <div class="form-group" *ngIf="selectedBroker && selectedBroker.authMode == 2">
+                        <label>Bearer token</label>
+                        <input type="password" class="form-control" #PrivateKey="ngModel" name="BearerToken" [(ngModel)]="formModel.bearerToken" required>
+                    </div>
+                    <div class="form-row">
+                      <div class="form-group col-md-8 offset-md-2">
+                        <button type="submit" class="btn btn-lg btn-block" [disabled]="form.invalid">Create</button>
+                      </div>
+                    </div>
+                  </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+	</mat-drawer-content>
+</mat-drawer-container>

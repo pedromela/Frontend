@@ -1,0 +1,29 @@
+<mat-drawer-container>
+	<mat-drawer #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [opened]="!mobileQuery.matches" [ngClass]="{'sidenav-collapsed': collapsedNav && !mobileQuery.matches}">
+		<div class="sidenav-header">
+			<span>{{collapsedNav && !mobileQuery.matches ? 'M' : 'MegaLadon'}}</span>
+		</div>
+    <app-navoptions></app-navoptions>
+	</mat-drawer>
+	<mat-drawer-content [ngClass]="{'sidenav-collapsed': collapsedNav && !mobileQuery.matches}">
+		<mat-toolbar>
+			<button mat-icon-button (click)="mobileQuery.matches ? snav.toggle() : collapsedNav = !collapsedNav">
+                <mat-icon>menu</mat-icon>
+            </button>
+		</mat-toolbar>
+        <div class="">
+            <h1 class="display-4 text-center">Access point</h1>
+            <hr>
+            <div class="card-grid card__content">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-7 col-lg-6">
+                        <app-accesspoint-edit></app-accesspoint-edit>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-5 col-lg-6">
+                        <!-- <app-accesspoint-info></app-accesspoint-info> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+	</mat-drawer-content>
+</mat-drawer-container>

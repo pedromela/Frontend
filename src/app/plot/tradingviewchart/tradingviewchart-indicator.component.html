@@ -1,0 +1,9 @@
+    <mat-form-field name="IndicatorCombobox" >
+        <mat-label>Indicator</mat-label>
+        <mat-select disableOptionCentering name="IndicatorComboboxSelect" [(ngModel)]="selectedIndicatorName" #Indicator="ngModel">
+            <mat-option *ngFor="let name of indicatorNames" (onSelectionChange)="Update(name)" [value]="name">
+                {{name}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>  
+    <div id="chart"></div>

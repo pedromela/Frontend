@@ -1,0 +1,53 @@
+<bot-loading [loading]="loading$ | async"></bot-loading>
+<mat-form-field>
+    <mat-label>Filter</mat-label>
+    <input matInput (keyup)="applyFilter($event)" #inputFilter>
+</mat-form-field>
+<table 
+    mat-table
+    [dataSource]="dataSource"
+    matSort
+    class="table table-hover"
+>
+    <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+        <td mat-cell *matCellDef="let row">{{ row.name}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="buyCondition">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Buy Condition</th>
+        <td mat-cell *matCellDef="let row">{{ row.buyCondition}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="sellCondition">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Sell Condition</th>
+        <td mat-cell *matCellDef="let row">{{ row.sellCondition}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="buyCloseCondition">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Buy Close Condition</th>
+        <td mat-cell *matCellDef="let row">{{ row.buyCloseCondition }}</td>
+    </ng-container>
+    
+    <ng-container matColumnDef="sellCloseCondition">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Sell Close Condition</th>
+        <td mat-cell *matCellDef="let row">{{ row.sellCloseCondition }}</td>
+    </ng-container>
+    <ng-container matColumnDef="edit">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td *matCellDef="let row">
+            <button class="btn btn-light" (click)="onEdit(row)"><mat-icon>edit</mat-icon></button>
+        </td>
+    </ng-container>
+    <ng-container matColumnDef="delete">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td *matCellDef="let row">
+            <button class="btn btn-light" (click)="onDelete(row.id)"><mat-icon>delete</mat-icon></button>
+        </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+<div class="card__content">
+    <mat-paginator [pageSizeOptions]="[5, 10, 20, 50]" showFirstLastButtons></mat-paginator>
+</div>

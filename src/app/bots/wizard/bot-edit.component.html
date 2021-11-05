@@ -1,0 +1,81 @@
+<bot-loading [loading]="loading$ | async"></bot-loading>
+<form #form='ngForm' class="mb-4" autocomplete="off" (submit)="onSubmit(form)">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-7 col-lg-6">
+        <div class="form-group">
+            <label>Bot name</label>
+            <input class="form-control" #BotName="ngModel" name="BotName" [(ngModel)]="_formModel.botName" required>
+        </div>
+        <div class="form-group">
+            <input name="TakeProfitCheckBox" type="checkbox" value="new" [(ngModel)]="_formModel.takeProfit">
+            <label> Take Profit %</label>
+            <input class="form-control" *ngIf="_formModel.takeProfit" #TakeProfit="ngModel" type="number" min="0" step="0.1" name="Increase" [(ngModel)]="_formModel.increaseP" required>
+        </div>
+        <div class="form-group">
+            <input name="StopLossCheckBox" type="checkbox" value="new" [(ngModel)]="_formModel.stopLoss">
+            <label> Stop Loss %</label>
+            <input class="form-control" *ngIf="_formModel.stopLoss" #StopLoss="ngModel" type="number" min="0" step="0.1" name="Decrease" [(ngModel)]="_formModel.decreaseP" required>
+            <div class="form-group" *ngIf="_formModel.stopLoss">
+                <input name="StopAfterStopLoss" type="checkbox" value="new" [(ngModel)]="StopAfterStopLoss">
+                <label> Stop after stop loss</label>
+                <br>
+                <label *ngIf="StopAfterStopLoss">Atempts</label>
+                <input class="form-control" *ngIf="StopAfterStopLoss" #MaxAtempts="ngModel" name="MaxAtempts" [(ngModel)]="_formModel.stopLossMaxAtemptsBeforeStopBuying" required>
+                <label *ngIf="StopAfterStopLoss">Private Key</label>
+                <input class="form-control" *ngIf="StopAfterStopLoss" #StopAfterStopLossMinutes="ngModel" name="StopAfterStopLossMinutes" [(ngModel)]="_formModel.stopAfterStopLossMinutes" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <input name="LockProfits" type="checkbox" value="new" [(ngModel)]="_formModel.lockProfits">
+            <label> Lock Profits</label>
+        </div>
+        <div class="form-group">
+            <input name="TrailingStopCheckBox" type="checkbox" value="new" [(ngModel)]="_formModel.trailingStop">
+            <label> Trailing Stop</label>
+            <input class="form-control" *ngIf="_formModel.trailingStop" #TakeProfit="ngModel" type="number" min="0" step="0.1" name="TrailingStopValue" [(ngModel)]="_formModel.trailingStopValueP" required>
+        </div>
+        <div class="form-group">
+            <input name="QuickReversalCheckBox" type="checkbox" value="new" [(ngModel)]="_formModel.quickReversal">
+            <label> QuickReversal</label>
+        </div>
+        <div class="form-group">
+            <input name="SuperReversalCheckBox" type="checkbox" value="new" [(ngModel)]="_formModel.superReversal">
+            <label> Super Reversal</label>
+        </div>
+        <div class="form-group">
+            <label> Max sell transactions by frame</label>
+            <input class="form-control" type="number" min="1" step="1" name="DefaultTransactionAmount" [(ngModel)]="_formModel.maxSellTransactionsByFrame">
+        </div>
+        <div class="form-group">
+            <mat-form-field name="StrategyCombobox" >
+                <mat-label>Strategy</mat-label>
+                <mat-select disableOptionCentering name="StrategyComboboxSelect" [(ngModel)]="_formModel.strategyId" #Strategy="ngModel">
+                    <mat-option *ngFor="let strategy of strategies$ | async" [value]="strategy.id">
+                        {{strategy.name}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>  
+        </div>
+        <div class="form-group">
+            <mat-form-field name="TimeFrameCombobox" >
+                <mat-label *ngIf="!_formModel.timeFrame">Time frame</mat-label>
+                <mat-select disableOptionCentering name="TimeFrameComboboxSelect" [(ngModel)]="_formModel.timeFrame" #TimeFrame="ngModel">
+                    <mat-option *ngFor="let timeFrame of TimeFrames" [value]="timeFrame.value">
+                        {{timeFrame.viewValue}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>  
+        </div>
+      </div>
+      
+      <div class="col-xs-12 col-sm-12 col-md-5 col-lg-6">
+        <app-bot-isvirtual [formModel]="_formModel"></app-bot-isvirtual>
+      </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-md-8 offset-md-2">
+        <button type="submit" class="btn btn-lg btn-block" [disabled]="form.invalid">Save</button>
+        </div>
+    </div>
+</form> 

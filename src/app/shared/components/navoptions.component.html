@@ -1,0 +1,29 @@
+<ul>
+    <li [routerLink]="['/home']">
+        <mat-icon>home</mat-icon>
+    </li>
+    <li [routerLink]="['/bots']">
+        <mat-icon>android</mat-icon>
+    </li>
+    <!-- <li [routerLink]="['/plot']">
+        <mat-icon>insights</mat-icon>
+    </li> -->
+    <li [routerLink]="['/accesspoints']">
+        <mat-icon>share</mat-icon>
+    </li>
+    <li [routerLink]="['/ranking']">
+        <mat-icon>military_tech</mat-icon>
+    </li>
+    <!-- <li>
+        <a href="/transactions"><mat-icon>business</mat-icon></a>
+    </li>
+    <li>
+        <a href="/scores"><mat-icon>analytics</mat-icon></a>
+    </li>
+    <li>
+        <a href="/equities"><mat-icon>attach_money</mat-icon></a>
+    </li> -->
+    <li (click)="onLogout()">
+        <mat-icon>exit_to_app</mat-icon>
+    </li>
+</ul>

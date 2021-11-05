@@ -1,0 +1,67 @@
+<div [formGroup]="formGroup">
+    <div class="card__content card__content_nopadding">
+        <bot-loading [loading]="loading$ | async"></bot-loading>
+        <div id="chart">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label">Start date  </label>
+                        <mat-form-field>
+                            <input
+                                matInput
+                                [max]="today"
+                                [matDatepicker]="startDatepicker"
+                                formControlName="startDate"
+                                readonly
+                            />
+                            <mat-datepicker-toggle
+                                matSuffix
+                                [for]="startDatepicker"
+                            ></mat-datepicker-toggle>
+                            <mat-datepicker
+                                #startDatepicker
+                                [startView]="'month'"
+                            ></mat-datepicker>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label">End date  </label>
+                        <mat-form-field>
+                            <input
+                                matInput
+                                [max]="today"
+                                [min]="startDateCtrl.value"
+                                [matDatepicker]="endDatepicker"
+                                formControlName="endDate"
+                                readonly
+                            />
+                            <mat-datepicker-toggle
+                                matSuffix
+                                [for]="endDatepicker"
+                            ></mat-datepicker-toggle>
+                            <mat-datepicker
+                                #endDatepicker
+                                [startView]="'month'"
+                            ></mat-datepicker>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <button
+                            mat-button
+                            matSuffix
+                            mat-icon-button
+                            aria-label="Search"
+                            (click)="search()"
+                        >
+                            <mat-icon>search</mat-icon>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

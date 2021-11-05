@@ -1,0 +1,10 @@
+<bot-loading [loading]="loading$ | async"></bot-loading>
+<app-bot-isvirtual
+    (userBotRelationEvent)="onSubmit($event)"
+    [formModel]="data"
+    [hideSubmit]="false"
+    [marketReadonly]="true"
+></app-bot-isvirtual>
+<div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()" [mat-dialog-close]="data.id">Close</button>
+</div>

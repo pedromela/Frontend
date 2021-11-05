@@ -1,0 +1,52 @@
+<div class="card">
+    <div class="card__header">
+      <h1 class="display-4 text-center">Bot List</h1>
+      <hr>
+    </div>
+    <div class="card__content card__content_nopadding">
+        <bot-loading [loading]="loading$ | async"></bot-loading>
+        <mat-form-field>
+            <mat-label>Filter</mat-label>
+            <input matInput (keyup)="applyFilter($event)" #inputFilter>
+        </mat-form-field>
+        <table 
+            mat-table
+            [dataSource]="dataSource"
+            matSort
+            class="table table-hover"
+        >
+            <ng-container matColumnDef="botName">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Bot name</th>
+                <td mat-cell *matCellDef="let row" (click)="goToBotDetail(row)">{{row.botName}}</td>
+            </ng-container>
+        
+            <ng-container matColumnDef="market">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Market</th>
+                <td mat-cell *matCellDef="let row" (click)="goToBotDetail(row)">{{row.market}}</td>
+            </ng-container>
+        
+            <ng-container matColumnDef="broker">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Broker</th>
+                <td mat-cell *matCellDef="let row" (click)="goToBotDetail(row)">{{row.brokerId | broker}}</td>
+            </ng-container>
+        
+            <ng-container matColumnDef="brokerType">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Broker type</th>
+                <td mat-cell *matCellDef="let row" (click)="goToBotDetail(row)">{{row.brokerType | brokerType}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="delete">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td *matCellDef="let row">
+                    <button class="btn btn-light" (click)="onDelete(row.id)"><mat-icon>clear</mat-icon></button>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+    </div>
+    <div class="card__content">
+        <mat-paginator [pageSizeOptions]="[5, 10, 20, 50]" showFirstLastButtons></mat-paginator>
+    </div>
+</div>

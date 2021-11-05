@@ -1,0 +1,4 @@
+<app-bot-edit (botDetailEvent)="onSubmit($event)" [formModel]="data"></app-bot-edit>
+<div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()" [mat-dialog-close]="data.id">Close</button>
+</div>

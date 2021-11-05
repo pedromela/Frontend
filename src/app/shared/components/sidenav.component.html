@@ -1,0 +1,27 @@
+<mat-drawer-container>
+	<mat-drawer #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [opened]="!mobileQuery.matches" [ngClass]="{'sidenav-collapsed': collapsedNav && !mobileQuery.matches}">
+		<div class="sidenav-header">
+			<span>			
+				<img style="width:50px;" src="./assets/img/shark-logo.png"/>
+				{{collapsedNav && !mobileQuery.matches ? '' : 'Megaladon'}}
+			</span>
+		</div>
+		<app-navoptions></app-navoptions>
+	</mat-drawer>
+	<mat-drawer-content [ngClass]="{'sidenav-collapsed': collapsedNav && !mobileQuery.matches}">
+		<mat-toolbar>
+			<button class="btn btn-dark" (click)="mobileQuery.matches ? snav.toggle() : collapsedNav = !collapsedNav">
+        		<mat-icon>menu</mat-icon>
+      		</button>
+			<p class="label-right" *ngIf="userDetails$ | async as userDetails">        
+				<button class="btn btn-dark" [routerLink]="['/subscription']">
+					<mat-icon>person</mat-icon>
+				</button>
+				{{ ' Hello, ' + userDetails.userName }}
+			</p>
+		</mat-toolbar>
+		<ng-content></ng-content>
+		<mat-divider></mat-divider>
+		<app-sidenav-footer></app-sidenav-footer>
+	</mat-drawer-content>
+</mat-drawer-container>

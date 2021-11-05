@@ -1,0 +1,28 @@
+<app-sidenav>
+	<div class="wrapper">
+		<div class="card-grid">
+		  <div class="card wrapped-div" style="width:18rem" *ngIf="userDetails$ | async as userDetails">
+			<ul class="list-group">
+			  <li class="list-group-item"><strong>Username : </strong>{{userDetails.userName}}</li>
+			  <li class="list-group-item"><strong>FullName : </strong>{{userDetails.fullName}}</li>
+			  <li class="list-group-item"><strong>Email : </strong>{{userDetails.email}}</li>
+			</ul>
+		  </div>
+		</div>
+
+		<div  *ngIf="isAdmin$ | async as isAdmin">
+			<mat-card *ngIf="isAdmin">
+				<mat-card-header>
+					<mat-card-title>Home</mat-card-title>
+					<mat-card-subtitle>Admin functions</mat-card-subtitle>
+				</mat-card-header>
+				<mat-card-content>
+		
+				</mat-card-content>
+				<mat-card-actions>
+					<app-botengine-start></app-botengine-start>
+				</mat-card-actions>
+			</mat-card>
+		</div>
+	</div>
+</app-sidenav>

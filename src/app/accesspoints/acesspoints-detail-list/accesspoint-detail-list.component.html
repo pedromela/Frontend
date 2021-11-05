@@ -1,0 +1,17 @@
+<bot-loading [loading]="loading$ | async"></bot-loading>
+<table class="table table-hover">
+    <tr>
+        <th>Name</th>
+        <th>Exchange</th>
+    </tr>
+    <tr *ngFor="let accessPoint of accessPoints$ | async">
+        <td>{{accessPoint.name}}</td>
+        <td>{{accessPoint.brokerId | broker}}</td>
+        <td>
+            <button class="btn btn-light" (click)="onEdit(accessPoint.id)"><mat-icon>edit</mat-icon></button>
+        </td>
+        <td>
+            <button  class="btn btn-light" (click)="onDelete(accessPoint.id)"><mat-icon>delete</mat-icon></button>
+        </td>
+    </tr>
+</table>

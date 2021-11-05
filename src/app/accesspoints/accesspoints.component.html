@@ -1,0 +1,31 @@
+<app-sidenav>
+  <div class="wrapper">
+    <div class="card-grid row">
+      <div class="col">
+        <div class="card card_grid_row">
+          <div class="card__content row">
+            <div class="col-lg-auto col-12">
+              <button class="btn btn-success" (click)="newAccessPointClick()">
+                New access point
+              </button>
+            </div>
+            <div class="col-lg col-12">
+              Access points are used to connect to your exchange/broker. Depending on what broker you choose different authentication methods may apply.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card__header">
+            <h1 class="display-4 text-center">Access points</h1>
+            <hr>
+          </div>
+          <div class="card__content card__content_nopadding">
+            <app-accesspoint-detail-list></app-accesspoint-detail-list>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-sidenav>

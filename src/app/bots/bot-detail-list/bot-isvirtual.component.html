@@ -1,0 +1,64 @@
+<div class="form-group">
+    <input name="IsVirtual" #IsVirtual="ngModel" type="checkbox" value="new" [(ngModel)]="_formModel.isVirtual">
+    <label> Virtual</label>
+    <br>
+    <div *ngIf="_formModel.isVirtual">
+        <mat-form-field name="AllMarketsCombobox">
+            <mat-label>Market</mat-label>
+            <mat-select
+                disableOptionCentering
+                name="AllMarketComboboxSelect"
+                #AllMarketComboboxSelect="ngModel"
+                [(ngModel)]="_formModel.market"
+                [disabled]="marketReadonly"
+            >
+                <mat-option *ngFor="let market of allMarkets$ | async" [value]="market">
+                    {{market}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <div *ngIf="!_formModel.isVirtual">
+        <mat-form-field name="AccessPointsCombobox">
+            <mat-label>Access point</mat-label>
+            <mat-select
+                disableOptionCentering
+                name="AccessPointComboboxSelect"
+                #AccessPointComboboxSelect="ngModel"
+                [(ngModel)]="_formModel.accessPointId"
+            >
+                <mat-option #accessPoint *ngFor="let accessPoint of accessPoints$ | async" (click)="onAPChange(accessPoint)" [value]="accessPoint.id">
+                    {{accessPoint.name}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field name="MarketsCombobox">
+            <mat-label>Market</mat-label>
+            <mat-select 
+                disableOptionCentering
+                name="MarketComboboxSelect"
+                #MarketComboboxSelect="ngModel"
+                [(ngModel)]="_formModel.market"
+                [disabled]="marketReadonly"
+            >
+                <mat-option *ngFor="let market of brokerMarkets$ | async" [value]="market">
+                    {{market}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div> 
+</div>
+<div class="form-group">
+    <label> Default transaction amount</label>
+    <input class="form-control" type="number" min="1" step="1" #DefaultTransactionAmount="ngModel" name="DefaultTransactionAmount" [(ngModel)]="_formModel.defaultTransactionAmount" required>
+</div>
+<div *ngIf="error" class="form-row">
+    <label>{{error}}</label>
+</div>
+<div *ngIf="!hideSubmit"class="form-row">
+    <div class="form-group col-md-8 offset-md-2">
+    <button type="submit" (click)="onSubmit()" class="btn btn-lg btn-block">Save</button>
+    <!-- <button type="submit" class="btn btn-lg btn-block" [disabled]="_formModel.valid()">Save</button> -->
+
+    </div>
+</div>

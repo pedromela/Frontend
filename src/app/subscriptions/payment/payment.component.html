@@ -1,0 +1,60 @@
+<div class="body" *ngIf="userDetails$ | async as userDetails">
+  <mat-card class="account">
+    <div class="row"  *ngIf="userDetails.package">
+      <h3>Your package is: {{ userDetails.package }}  </h3>
+      <div class="button-container">
+        <button type="submit" class="btn" (click)="onPay(3)">Update</button>
+        &nbsp;
+      </div>
+    </div>
+    <div class="row" *ngIf="!userDetails.package">
+      <div class="col">
+        <h3>Basic</h3>
+        <mat-list>
+          <mat-list-item><mat-icon>done</mat-icon>Up to 5 bots</mat-list-item>
+          <mat-list-item><mat-icon>done</mat-icon>All strategies</mat-list-item>
+        </mat-list>
+        <mat-divider></mat-divider>
+        <h3>10$ / Month</h3>
+        <p>(when paying for a year)</p>
+        <div class="button-container">
+          <button type="submit" class="btn" (click)="onPay(1)">Buy now</button>
+          &nbsp;
+        </div>
+      </div>
+      <mat-divider [vertical]="true"></mat-divider>
+      <div class="col">
+        <h3>Advanced</h3>
+        <mat-list>
+          <mat-list-item ><mat-icon>done</mat-icon>Up to 20 bots</mat-list-item>
+          <mat-list-item><mat-icon>done</mat-icon>All strategies</mat-list-item>
+          <mat-list-item><mat-icon>done</mat-icon>Strategy creation</mat-list-item>
+        </mat-list>
+        <mat-divider></mat-divider>
+        <h3>20$ / Month</h3>
+        <p>(when paying for a year)</p>
+        <div class="button-container">
+          <button type="submit" class="btn" (click)="onPay(2)">Buy now</button>
+          &nbsp;
+        </div>
+      </div>
+      <mat-divider [vertical]="true"></mat-divider>
+      <div class="col">
+        <h3>Maximum</h3>
+        <mat-list>
+          <mat-list-item><mat-icon>done</mat-icon>Up to 50 bots</mat-list-item>
+          <mat-list-item><mat-icon>done</mat-icon>All strategies</mat-list-item>
+          <mat-list-item><mat-icon>done</mat-icon>Strategy creation</mat-list-item>
+          <mat-list-item><mat-icon>done</mat-icon>Strategy backtesting</mat-list-item>
+        </mat-list>
+        <mat-divider></mat-divider>
+        <h3>50$ / Month</h3>
+        <p>(when paying for a year)</p>
+        <div class="button-container">
+          <button type="submit" class="btn" (click)="onPay(3)">Buy now</button>
+          &nbsp;
+        </div>
+      </div>
+    </div>
+  </mat-card>
+</div>

@@ -1,0 +1,38 @@
+<div class="body">
+
+    <mat-card class="account">
+      <h3> Make a transaction </h3>
+        <form [formGroup]="transactionForm" (ngSubmit)="sendEth($event)">
+            <mat-form-field appearance="outline">
+                <mat-label>Destination Account</mat-label>
+                <input matInput placeholder="Placeholder" formControlName="sendaddress">
+              <mat-error *ngIf="transactionForm.hasError('amount') && !transactionForm.hasError('required')">
+                Please enter a valid email address
+              </mat-error>
+                <mat-icon matSuffix>account_balance_wallet</mat-icon>
+              <mat-error *ngIf="transactionForm.get('sendaddress').hasError('required')">
+                Address <strong>required</strong>
+              </mat-error>
+                <mat-hint></mat-hint>
+              </mat-form-field>
+              &nbsp;
+              <mat-form-field appearance="outline">
+                <mat-label>Amount</mat-label>
+                <input matInput type="number" min=0 placeholder="Placeholder" formControlName="amount" autocomplete="off">
+                <mat-icon matSuffix>attach_money</mat-icon>
+
+                <mat-error *ngIf="transactionForm.get('amount').hasError('required')">
+                  Amount <strong>required</strong>
+                </mat-error>
+                <mat-hint></mat-hint>
+
+              </mat-form-field>
+        </form>
+        &nbsp;
+        <div class="button-container">
+          <button mat-raised-button color="accent" [disabled]="!transactionForm.valid" (click)="sendEth($event)"><mat-icon *ngIf="!transactionForm.valid">lock</mat-icon><mat-icon *ngIf="transactionForm.valid">input</mat-icon>&nbsp;Transfer Ether</button>
+          &nbsp;
+        </div>
+        &nbsp;
+    </mat-card>
+  </div>

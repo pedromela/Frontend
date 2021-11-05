@@ -1,0 +1,49 @@
+<div class="body" *ngIf="direction">
+      <mat-tab-group>
+        <mat-tab label="Basic">
+          <h3>Basic</h3>
+          <mat-list>
+            <mat-list-item><mat-icon>done</mat-icon>Up to 5 bots</mat-list-item>
+            <mat-list-item><mat-icon>done</mat-icon>All strategies</mat-list-item>
+          </mat-list>
+          <div class="button-container">
+            <button type="submit" class="btn" (click)="payment(1)">Buy now</button>
+            &nbsp;
+          </div>
+        </mat-tab>
+        <mat-tab label="Advanced">
+          <h3>Advanced</h3>
+          <mat-list>
+            <mat-list-item ><mat-icon>done</mat-icon>Up to 20 bots</mat-list-item>
+            <mat-list-item><mat-icon>done</mat-icon>All strategies</mat-list-item>
+            <mat-list-item><mat-icon>done</mat-icon>Strategy creation</mat-list-item>
+          </mat-list>
+          <div class="button-container">
+            <button type="submit" class="btn" (click)="payment(2)">Buy now</button>
+            &nbsp;
+          </div>
+        </mat-tab>
+        <mat-tab label="Maximum">
+          <h3>Maximum</h3>
+          <mat-list>
+            <mat-list-item><mat-icon>done</mat-icon>Up to 50 bots</mat-list-item>
+            <mat-list-item><mat-icon>done</mat-icon>All strategies</mat-list-item>
+            <mat-list-item><mat-icon>done</mat-icon>Strategy creation</mat-list-item>
+            <mat-list-item><mat-icon>done</mat-icon>Strategy backtesting</mat-list-item>
+          </mat-list>
+          <div class="button-container">
+            <button type="submit" class="btn" (click)="payment(3)">Buy now</button>
+            &nbsp;
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+</div>
+<div class="body" *ngIf="!direction">
+    <div style="text-align:center">
+      <section class="header">
+        <h3> Click connect wallet</h3>
+        <button type="submit" class="btn btn-lg" (click)="connectAccount()">Connect</button>
+        &nbsp;
+      </section>
+    </div>
+</div>

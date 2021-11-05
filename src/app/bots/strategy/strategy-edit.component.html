@@ -1,0 +1,27 @@
+<form #form='ngForm' autocomplete="off" (submit)="onSubmit(form)">
+    <div class="form-group">
+        <label>Strategy name</label>
+        <input class="form-control" #BotName="ngModel" name="BotName" [(ngModel)]="formModel.name" required>
+    </div>
+    <div class="form-group">
+        <label>Buy condition</label>
+        <input class="form-control" #BuyCondition="ngModel" name="BuyCondition" [(ngModel)]="formModel.buyCondition" required>
+    </div>
+    <div class="form-group">
+        <label>Sell condition</label>
+        <input class="form-control" #SellCondition="ngModel" name="SellCondition" [(ngModel)]="formModel.sellCondition" required>
+    </div>
+    <div class="form-group">
+        <label>Buy close condition</label>
+        <input class="form-control" #BuyCloseCondition="ngModel" name="BuyCloseCondition" [(ngModel)]="formModel.buyCloseCondition" required>
+    </div>
+    <div class="form-group">
+        <label>Sell close condition</label>
+        <input class="form-control" #SellCloseCondition="ngModel" name="SellCloseCondition" [(ngModel)]="formModel.sellCloseCondition" required>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-8 offset-md-2">
+        <button type="submit" class="btn btn-lg btn-block" [disabled]="form.invalid">Save</button>
+        </div>
+    </div>
+</form>    

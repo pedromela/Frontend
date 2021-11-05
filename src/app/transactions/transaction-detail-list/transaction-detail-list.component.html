@@ -1,0 +1,29 @@
+<table class="table table-bordered table-hover">
+    <tr>
+        <td >id</td>
+        <td >botId</td>
+        <td >buyPriceId</td>
+        <td >buyId</td>
+        <td >sellPriceId</td>
+        <td >amountBTC</td>
+        <td >amountEUR</td>
+        <td >type</td>
+        <td >lastProfitablePrice</td>
+        <td >states</td>
+    </tr>
+    <tr *ngFor="let pd of service.list" [ngClass]="colorCondition(pd)">
+        <td (click)="populateForm(pd)">{{pd.id}}</td>
+        <td (click)="populateForm(pd)">{{pd.botId}}</td>
+        <td (click)="populateForm(pd)">{{pd.buyPriceId}}</td>
+        <td (click)="populateForm(pd)">{{pd.buyId}}</td>
+        <td (click)="populateForm(pd)">{{pd.sellPriceId}}</td>
+        <td (click)="populateForm(pd)">{{pd.amount}}BTC</td>
+        <td (click)="populateForm(pd)">${{pd.amountEUR}}</td>
+        <td (click)="populateForm(pd)">{{pd.type}}</td>
+        <td (click)="populateForm(pd)">{{pd.lastProfitablePrice}}</td>
+        <td (click)="populateForm(pd)">{{pd.states}}</td>
+        <!-- <td>
+            <i class="far fa-trash-alt fa-lg text-danger" (click)="onDelete(pd.id)"></i>
+        </td> -->
+    </tr>
+</table>
