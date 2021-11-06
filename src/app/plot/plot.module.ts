@@ -7,7 +7,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { PlotComponent } from './plot.component';
 import { TradingViewChartComponent } from './tradingviewchart/tradingviewchart.component';
-import { TradingViewChartIndicatorComponent } from './tradingviewchart/Tradingviewchart-indicator.component';
+import { TradingViewChartIndicatorComponent } from './tradingviewchart/tradingviewchart-indicator.component';
 
 
 @NgModule({
