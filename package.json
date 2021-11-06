@@ -17,10 +17,13 @@
   "dependencies": {
     "3box": "^1.19.1",
     "@angular-builders/custom-webpack": "^11.0.0",
+    "@angular-devkit/build-angular": "~0.1102.1",
     "@angular/animations": "~11.2.1",
     "@angular/cdk": "^11.2.1",
+    "@angular/cli": "~11.2.1",
     "@angular/common": "~11.2.1",
     "@angular/compiler": "~11.2.1",
+    "@angular/compiler-cli": "~11.2.1",
     "@angular/core": "~11.2.1",
     "@angular/flex-layout": "^11.0.0-beta.33",
     "@angular/forms": "~11.2.1",
@@ -35,6 +38,7 @@
     "@ngrx/store": "^11.1.1",
     "@walletconnect/web3-provider": "^1.3.5",
     "apexcharts": "^3.25.0",
+    "express": "^4.17.1",
     "lightweight-charts": "^3.3.0",
     "ng-apexcharts": "^1.5.8",
     "ngx-toastr": "^9.1.1",
@@ -44,12 +48,9 @@
     "truffle-contract": "^4.0.31",
     "ts-md5": "^1.2.7",
     "tslib": "^2.0.0",
-    "web3modal": "^1.9.3",
-    "zone.js": "~0.11.3",
-    "@angular/cli": "~11.2.1",
-    "@angular/compiler-cli": "~11.2.1",
     "typescript": "~4.1.2",
-    "@angular-devkit/build-angular": "~0.1102.1"
+    "web3modal": "^1.9.3",
+    "zone.js": "~0.11.3"
   },
   "devDependencies": {
     "@types/jasmine": "~3.6.0",
