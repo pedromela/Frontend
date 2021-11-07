@@ -15,7 +15,6 @@
   },
   "private": true,
   "dependencies": {
-    "3box": "^1.19.1",
     "@angular-builders/custom-webpack": "^11.0.0",
     "@angular-devkit/build-angular": "~0.1102.1",
     "@angular/animations": "~11.2.1",

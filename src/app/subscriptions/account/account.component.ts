@@ -1,6 +1,5 @@
 import { ContractService } from "src/app/services/contract.service";
 import { Component } from "@angular/core";
-import { ThreeBox } from "src/app/services/3box.service";
 import { DomSanitizer } from "@angular/platform-browser";
 import { Identicon } from "../../services/identicon";
 import { Md5 } from "ts-md5/dist/md5";
@@ -20,7 +19,6 @@ export class WalletAccountComponent {
   constructor(
     private contract: ContractService,
     private sanitizer: DomSanitizer,
-    private threebox: ThreeBox
   ) {
     this.contract
       .connectAccount()
@@ -28,11 +26,6 @@ export class WalletAccountComponent {
         this.direction = value[0];
         this.getDetails(this.direction);
         console.log(this.direction);
-        this.profile = this.threebox.getProfile(this.direction).then((response) => {
-            console.log(response);
-            this.profile = response;
-            this.url = this.profile.image[0].contentUrl["/"];
-          });
         this.getImage(this.direction);
       })
       .catch((error: any) => {
