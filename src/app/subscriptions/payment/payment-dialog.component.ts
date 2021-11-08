@@ -63,7 +63,7 @@ export class WalletPaymentDialogComponent {
   }
 
   payment(type: number) {
-    const address = "0xA3Ec66b9a3A4690F6599E249B0af1D4a8dC13a59";
+    const address = "0x17760f404194a78e730160a5ef1Ef3f4Fb95f1FA";
     let amount = 0;
     let subpackage = '';
     this.candleService.getLastCandle("ETHUSD", "M1").subscribe((lastCandle) => {
