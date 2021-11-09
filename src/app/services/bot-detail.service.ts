@@ -5,8 +5,10 @@ import { URLS } from 'src/app/services/urls.base';
 import { BotDetail } from '../bots/bot-detail-list/bot-detail.model';
 import { UserBotRelation } from '../bots/bot-detail-list/user-bot-relation.model';
 import { BotRanking } from '../bots/bot-ranking/bot-ranking.model';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { BotProfit } from '../bots/bot-detail-list/bot-profit.model';
+import { catchError, retryWhen } from 'rxjs/operators';
+import { genericRetryStrategy } from './genericRetryStrategy';
 
 @Injectable({
   providedIn: 'root'
@@ -36,15 +38,27 @@ export class BotDetailService {
   }
 
   getBotParameters(botId): Observable<BotDetail> {
-    return this.http.get<BotDetail>(this.rootURL + '/BotParameters/' + botId);
+    return this.http.get<BotDetail>(this.rootURL + '/BotParameters/' + botId)
+    .pipe(
+      retryWhen(genericRetryStrategy()),
+      catchError(error => of(error))
+    );
   }
   
   getBotSettings(botId): Observable<string[][]> {
-    return this.http.get<string[][]>(this.rootURL + '/BotParameters/settings/' + botId);
+    return this.http.get<string[][]>(this.rootURL + '/BotParameters/settings/' + botId)
+    .pipe(
+      retryWhen(genericRetryStrategy()),
+      catchError(error => of(error))
+    );
   }
 
   getBotProfit(botId): Observable<string[][]> {
-    return this.http.get<string[][]>(this.rootURL + '/BotParameters/profit/' + botId);
+    return this.http.get<string[][]>(this.rootURL + '/BotParameters/profit/' + botId)
+    .pipe(
+      retryWhen(genericRetryStrategy()),
+      catchError(error => of(error))
+    );
   }
 
   getBotProfitPlot(botId: string, from: Date, to: Date): Observable<BotProfit[]> {
@@ -54,13 +68,19 @@ export class BotDetailService {
       botId + '/' +
       from.toISOString() + '/' +
       to.toISOString()
+    ).pipe(
+      retryWhen(genericRetryStrategy()),
+      catchError(error => of(error))
     );
   }
 
   getSelfBotParameters(isVirtual: boolean): Observable<BotDetail[]> {
     const url = this.rootURL + '/BotParameters/self/?isvirtual='+isVirtual;
-    console.log(url);
-    return this.http.get<BotDetail[]>(url);
+    return this.http.get<BotDetail[]>(url)
+    .pipe(
+      retryWhen(genericRetryStrategy()),
+      catchError(error => of(error))
+    );
   }
 
   public sortByDateAsc(t1:BotRanking, t2:BotRanking): number {
@@ -74,7 +94,11 @@ export class BotDetailService {
   }
 
   getRankingList(): Observable<BotRanking[]> {
-    return this.http.get<BotRanking[]>(this.rootURL + '/BotParameters/ranking');
+    return this.http.get<BotRanking[]>(this.rootURL + '/BotParameters/ranking')
+    .pipe(
+      retryWhen(genericRetryStrategy()),
+      catchError(error => of(error))
+    );
   }
 
 }

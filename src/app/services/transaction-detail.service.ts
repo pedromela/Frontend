@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { URLS } from 'src/app/services/urls.base';
 import { TransactionDetail } from '../transactions/transaction-detail-list/transaction-detail.model';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { genericRetryStrategy } from './genericRetryStrategy';
+import { catchError, retryWhen } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -41,9 +43,6 @@ export class TransactionDetailService {
   deleteTransactionDetail(id) {
     return this.http.delete(URLS.botapiURL + '/Transactions/'+ id);
   }
-  getAllTransactions() {
-    return this.http.get(URLS.botapiURL + '/Transactions');
-  }
 
   getTradeHistoryTransactions(botId: string, quantity: number): Observable<TransactionDetail[]> {
     const date = new Date();
@@ -53,12 +52,20 @@ export class TransactionDetailService {
         quantity +'/' + 
         botId + '/' + 
         date.toUTCString()
+    )
+    .pipe(
+      retryWhen(genericRetryStrategy()),
+      catchError(error => of(error))
     );
   }
 
   getActiveTransactions(botId: string, quantity: number): Observable<TransactionDetail[]> {
     const date = new Date();
-    return this.http.get<TransactionDetail[]>(URLS.botapiURL + '/Transactions/active/' + quantity + '/' + botId + '/' + date.toUTCString());
+    return this.http.get<TransactionDetail[]>(URLS.botapiURL + '/Transactions/active/' + quantity + '/' + botId + '/' + date.toUTCString())
+    .pipe(
+      retryWhen(genericRetryStrategy()),
+      catchError(error => of(error))
+    );
   }
 
   getTradeHistoryTransactionsFromTo(botId: string, from: Date, to: Date): Observable<TransactionDetail[]> {
@@ -70,6 +77,10 @@ export class TransactionDetailService {
     return this.http.get<TransactionDetail[]>(
       URLS.botapiURL + '/Transactions/history',
       { params }
+    )
+    .pipe(
+      retryWhen(genericRetryStrategy()),
+      catchError(error => of(error))
     );
   }
 
@@ -81,6 +92,10 @@ export class TransactionDetailService {
     return this.http.get<TransactionDetail[]>(
       URLS.botapiURL + '/Transactions/active',
       { params }
+    )
+    .pipe(
+      retryWhen(genericRetryStrategy()),
+      catchError(error => of(error))
     );
   }
 
@@ -118,12 +133,20 @@ export class TransactionDetailService {
         quantity +'/' + 
         botId + '/' + 
         date.toUTCString()
+    )
+    .pipe(
+      retryWhen(genericRetryStrategy()),
+      catchError(error => of(error))
     );
   }
 
   getActiveBacktesterTransactions(botId: string, quantity: number): Observable<TransactionDetail[]> {
     const date = new Date();
-    return this.http.get<TransactionDetail[]>(URLS.backtesterapiURL + '/BacktesterTransactions/active/' + quantity + '/' + botId + '/' + date.toUTCString());
+    return this.http.get<TransactionDetail[]>(URLS.backtesterapiURL + '/BacktesterTransactions/active/' + quantity + '/' + botId + '/' + date.toUTCString())
+    .pipe(
+      retryWhen(genericRetryStrategy()),
+      catchError(error => of(error))
+    );
   }
 
   getTradeHistoryBacktesterTransactionsFromTo(botId: string, from: Date, to: Date): Observable<TransactionDetail[]> {
@@ -135,6 +158,10 @@ export class TransactionDetailService {
     return this.http.get<TransactionDetail[]>(
       URLS.backtesterapiURL + '/BacktesterTransactions/history',
       { params }
+    )
+    .pipe(
+      retryWhen(genericRetryStrategy()),
+      catchError(error => of(error))
     );
   }
 
@@ -146,6 +173,10 @@ export class TransactionDetailService {
     return this.http.get<TransactionDetail[]>(
       URLS.backtesterapiURL + '/BacktesterTransactions/active',
       { params }
+    )
+    .pipe(
+      retryWhen(genericRetryStrategy()),
+      catchError(error => of(error))
     );
   }
 

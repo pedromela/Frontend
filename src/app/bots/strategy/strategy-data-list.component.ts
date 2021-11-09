@@ -66,7 +66,6 @@ export class StrategyDetailListComponent implements  OnInit, AfterViewInit {
   }
 
   onEdit(strategyData: StrategyData) {
-    console.log(strategyData);
     const dialogRef = this.dialog.open(StrategyEditDialogComponent, {
       width: '600px',
       data: strategyData

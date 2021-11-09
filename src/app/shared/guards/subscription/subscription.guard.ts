@@ -33,7 +33,6 @@ export class SubscriptionGuard implements CanActivate {
               return true;
             }),
             map((userDetails) => {
-              console.log(userDetails);
               if (userDetails.package != null)
                 return true;
               else {

@@ -25,7 +25,6 @@ export class WalletAccountComponent {
       .then((value: any) => {
         this.direction = value[0];
         this.getDetails(this.direction);
-        console.log(this.direction);
         this.getImage(this.direction);
       })
       .catch((error: any) => {

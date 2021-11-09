@@ -2,9 +2,10 @@ import { Injectable } from '@angular/core';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { URLS } from './urls.base';
-import { map } from 'rxjs/operators';
+import { catchError, map, retryWhen } from 'rxjs/operators';
 import { UserDetail } from '../user/user-details.model';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { genericRetryStrategy } from './genericRetryStrategy';
 
 @Injectable({
   providedIn: 'root'
@@ -31,13 +32,19 @@ export class UserService {
   }
 
   login(formData): Observable<any> {
-    return this.http.post<any>(this.BaseURI + '/ApplicationUser/Login', formData);
+    return this.http.post<any>(this.BaseURI + '/ApplicationUser/Login', formData)
+    .pipe(
+      retryWhen(genericRetryStrategy()),
+      catchError(error => of(error))
+    );
   }
 
   getUserDetail() {
     return this.http.get(this.BaseURI + '/UserProfile')
       .pipe(
-        map((userDetail) => userDetail as UserDetail)
+        map((userDetail) => userDetail as UserDetail),
+        retryWhen(genericRetryStrategy()),
+        catchError(error => of(error))
       );
   }
 }

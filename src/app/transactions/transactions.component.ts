@@ -37,7 +37,6 @@ export class TransactionsComponent implements AfterViewInit {
 
     if(this.isNearBottom) {
       this.lastId = this.child.service.refreshList(this.lastId);
-      console.log("Is near bottom! LastId: " + this.lastId);
     }
   }
 

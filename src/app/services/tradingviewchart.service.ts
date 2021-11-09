@@ -3,9 +3,10 @@ import { HttpClient } from "@angular/common/http";
 import { URLS } from 'src/app/services/urls.base';
 import { Candle } from '../plot/candlechart/candle.model';
 import { IndicatorDescription } from '../plot/tradingviewchart/indicator-description.model';
-import { Observable } from 'rxjs';
-import { IndicatorLine } from '../shared/interfaces/indicator-line';
+import { Observable, of } from 'rxjs';
 import { Point } from '../plot/tradingviewchart/point.model';
+import { genericRetryStrategy } from './genericRetryStrategy';
+import { catchError, retryWhen } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +25,6 @@ export class TradingViewChartService {
     timeFrame: null
   };
   
-  //readonly rootURL = 'http://megaladon.ddns.net/BotAPI/api';
 
   readonly rootURL = URLS.botapiURL;
 
@@ -60,7 +60,11 @@ export class TradingViewChartService {
                           indicatorDescription.market + '/' +
                           indicatorDescription.marketType + '/' +
                           indicatorDescription.brokerType + '/' +
-                          indicatorDescription.timeFrame);
+                          indicatorDescription.timeFrame)
+                          .pipe(
+                            retryWhen(genericRetryStrategy()),
+                            catchError(error => of(error))
+                          );
   }
 
   getIndicator(indicatorDescription: IndicatorDescription) {
@@ -69,7 +73,11 @@ export class TradingViewChartService {
                           indicatorDescription.market + '/' +
                           indicatorDescription.marketType + '/' +
                           indicatorDescription.brokerType + '/' +
-                          indicatorDescription.timeFrame);
+                          indicatorDescription.timeFrame)
+                          .pipe(
+                            retryWhen(genericRetryStrategy()),
+                            catchError(error => of(error))
+                          );
 
   }
 
@@ -79,50 +87,43 @@ export class TradingViewChartService {
                           indicatorDescription.market + '/' +
                           indicatorDescription.marketType + '/' +
                           indicatorDescription.brokerType + '/' +
-                          indicatorDescription.timeFrame);
+                          indicatorDescription.timeFrame)
+                          .pipe(
+                            retryWhen(genericRetryStrategy()),
+                            catchError(error => of(error))
+                          );
 
   }
 
   getIndicatorPointsFromTo(botId, timeFrame, from: Date, to: Date): Observable<{ key: string, value: Point[] }[]> {
     const url = this.rootURL + '/Points/bot/' + botId + '/' + timeFrame + '/' + from.toISOString() + '/' + to.toISOString();
-    console.log(url);
-    return this.http.get<{ key: string, value: Point[] }[]>(url);
+    return this.http.get<{ key: string, value: Point[] }[]>(url)
+    .pipe(
+      retryWhen(genericRetryStrategy()),
+      catchError(error => of(error))
+    );
   }
 
   getCandlesFromTo(market, timeFrame, from: Date, to: Date): Observable<Candle[]> {
-    return this.http.get<Candle[]>(this.rootURL + '/Plot/candle/' + market + '/' + timeFrame + '/' + from.toISOString() + '/' + to.toISOString());
+    return this.http.get<Candle[]>(this.rootURL + '/Plot/candle/' + market + '/' + timeFrame + '/' + from.toISOString() + '/' + to.toISOString())
+    .pipe(
+      retryWhen(genericRetryStrategy()),
+      catchError(error => of(error))
+    );
   }
   getLastCandle(market, timeFrame): Observable<Candle> {
-    return this.http.get<Candle>(this.rootURL + '/Plot/candle/last/' + market + '/' + timeFrame);
+    return this.http.get<Candle>(this.rootURL + '/Plot/candle/last/' + market + '/' + timeFrame)
+    .pipe(
+      retryWhen(genericRetryStrategy()),
+      catchError(error => of(error))
+    );
   }
 
   getTimeSeries(market, timeframe) {
-    return this.http.get(URLS.botengineapiURL + '/BotEngine/timeseries/' + market + '/' + timeframe);
-  }
-
-  refreshList(id): number{
-    console.log("candlechart.service: refreshList() id is " + id);
-
-    var response = this.http.get(this.rootURL + '/Plot/somePairs/100/' + id);
-
-    response
-    .toPromise()
-    .then(res => { //Success
-      this.auxList = res as Candle[];
-      this.list.push(...this.auxList);
-    }, msg => { //Error
-        console.log(msg);
-    })
-
-    if(this.auxList == undefined) {
-      return 0;
-    }
-
-    var last = this.list[this.list.length - 1];
-    if(last == undefined) {
-
-      return 0;
-    }
-    return last.id;
+    return this.http.get(URLS.botengineapiURL + '/BotEngine/timeseries/' + market + '/' + timeframe)
+    .pipe(
+      retryWhen(genericRetryStrategy()),
+      catchError(error => of(error))
+    );
   }
 }

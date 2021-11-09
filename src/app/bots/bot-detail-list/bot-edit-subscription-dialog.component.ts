@@ -22,7 +22,6 @@ import * as fromStore from 'src/app/store';
     ) { }
   
     ngOnInit() {
-        console.log(this.data);
     }
 
     onNoClick(): void {

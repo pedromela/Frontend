@@ -22,7 +22,6 @@ export class WalletPaymentDialogComponent {
   ) { }
 
   ngOnInit() {
-    console.log(this.type);
   }
 
   onNoClick(): void {

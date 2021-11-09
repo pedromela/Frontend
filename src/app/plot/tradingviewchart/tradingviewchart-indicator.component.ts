@@ -66,7 +66,6 @@ export class TradingViewChartIndicatorComponent {
     .toPromise()
     .then(res => { //Success
         var candle = res as Candle;
-        console.log(candle);
         //this.indicatorSeries.update(new LineDataUnit(candle));    
       },
       msg => { //Error
@@ -171,7 +170,6 @@ export class TradingViewChartIndicatorComponent {
     .toPromise()
     .then(res => { //Success
       this.indicatorNames = res as string[];
-      console.log(this.indicatorNames);
     }, msg => { //Error
         console.log(msg);
     });

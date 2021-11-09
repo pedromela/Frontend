@@ -138,7 +138,6 @@ export class BotBacktestComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit() {
     this._subs.add(this.data$.subscribe((data) => {
-      console.log(data);
       if (data) {
         const dataMapped = data.map((e) => e.data[0]);
         if(dataMapped[0] === -1 && dataMapped[1] === -1) {
@@ -176,12 +175,10 @@ export class BotBacktestComponent implements OnInit, OnDestroy, AfterViewInit {
     this.http.get<any>(URLS.backtesterapiURL + '/backtester?' + str)
       .subscribe(res => {
         this.toastr.info(res.message, 'Backtest');
-        console.log(res);
       })
   }
 
   public chartClicked = (event) => {
-    console.log(event);
     this.backtesterSignalRService.broadcastChartData();
   }
 

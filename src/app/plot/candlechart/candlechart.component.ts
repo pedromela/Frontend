@@ -66,9 +66,7 @@ export class CandleChartComponent {
     await response
     .toPromise()
     .then(res => { //Success
-      console.log(res);
       var candle = res as Candle;
-      console.log(this.series);
       this.series.push(new CandleChartUnit(candle));
       this.chart.updateSeries([{
         data: this.series
@@ -92,8 +90,6 @@ export class CandleChartComponent {
   public async CreateSeries() {
     await this.refreshList();
     var list = this.list;
-    console.log(list);
-    console.log(list.length);
     this.series = this.list.map(candle => new CandleChartUnit(candle));
     this.chartOptions = {
         series: [
@@ -120,7 +116,6 @@ export class CandleChartComponent {
           }
         }
       };
-    console.log(this.series);
   }
 
   public generateDayWiseTimeSeries(baseval, count, yrange) {

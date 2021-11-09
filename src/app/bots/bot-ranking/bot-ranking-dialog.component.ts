@@ -58,7 +58,6 @@ import { ToastrService } from "ngx-toastr";
 
           this.service.createUserBotRelation(userBotRelation)
               .subscribe(res => {
-              console.log(res);
               },
               err => {
                   console.log(err);

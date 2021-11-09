@@ -2,8 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { ToastrService } from 'ngx-toastr';
 import { URLS } from 'src/app/services/urls.base';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { StrategyData } from '../bots/strategy/strategy-data.model';
+import { catchError, retryWhen } from 'rxjs/operators';
+import { genericRetryStrategy } from './genericRetryStrategy';
 
 @Injectable({
   providedIn: 'root'
@@ -44,7 +46,11 @@ export class StrategyDataService {
   }
 
   getGetAllStrategies() : Observable<StrategyData[]>{
-    return this.http.get<StrategyData[]>(this.rootURL + '/conditionstrategydatas/self');
+    return this.http.get<StrategyData[]>(this.rootURL + '/conditionstrategydatas/self')
+    .pipe(
+      retryWhen(genericRetryStrategy()),
+      catchError(error => of(error))
+    );
   }
   refreshList() {
     var response = this.http.get(this.rootURL + '/conditionstrategydatas/self');

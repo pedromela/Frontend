@@ -14,7 +14,6 @@ import { BotDetail } from "./bot-detail.model";
       @Inject(MAT_DIALOG_DATA) public data: BotDetail) {}
   
     ngOnInit() {
-        console.log(this.data);
     }
 
     onNoClick(): void {

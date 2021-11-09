@@ -42,7 +42,6 @@ export class BacktesterSignalRService {
     this.hubConnection.on('transferchartdata', (data) => {
       this.data = data;
       this.dataSubject.next(data);
-      console.log(data);
     });
   }
 

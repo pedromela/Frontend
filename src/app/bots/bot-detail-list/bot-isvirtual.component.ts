@@ -83,7 +83,6 @@ export class BotIsVirtualComponent implements  OnInit {
   ) { }
 
   ngOnInit() {
-      console.log(this._formModel);
       this.store.dispatch(fromStore.BotActions.loadAccessPoints());
       this.store.dispatch(fromStore.BotActions.loadAllMarkets());
       this.store.dispatch(fromStore.BotActions.loadBrokerMarkets({ brokerId: this._formModel.brokerId }));
@@ -119,7 +118,6 @@ export class BotIsVirtualComponent implements  OnInit {
   
       this.service.createUserBotRelation(userBotRelation)
           .subscribe(res => {
-            console.log(res);
             this.addUserBotRelation(res as UserBotRelation);
           },
           err => {
