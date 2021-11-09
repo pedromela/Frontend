@@ -21,7 +21,7 @@ export class BotRankingListComponent implements OnInit   {
   @ViewChild(MatSort) sort: MatSort;
 
   botRanking$: Observable<BotRanking[]> = this.store.select(fromStore.BotSelectors.getBotRanking);
-  loading$: Observable<boolean> = this.store.select(fromStore.BotSelectors.getLoading).pipe(delay(50));
+  loading$: Observable<boolean> = this.store.select(fromStore.BotSelectors.getLoadingRanking).pipe(delay(50));
   bots$: Observable<BotDetail[]> = this.store.select(fromStore.BotSelectors.getUserBots);
   virtualBots$: Observable<BotDetail[]> = this.store.select(fromStore.BotSelectors.getUserVirtualBots);
 

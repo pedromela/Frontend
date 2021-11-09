@@ -6,7 +6,29 @@
 				{{collapsedNav && !mobileQuery.matches ? '' : 'Megaladon'}}
 			</span>
 		</div>
-		<app-navoptions></app-navoptions>
+		<!-- <app-navoptions></app-navoptions> -->
+		<mat-nav-list>
+			<mat-list-item class="parent" [routerLink]="['/home']">
+				<span class="full-width" *ngIf="!collapsedNav">Home</span>
+				<mat-icon mat-list-icon>home</mat-icon>
+			</mat-list-item>
+			<mat-list-item class="parent" [routerLink]="['/bots']">
+				<span class="full-width" *ngIf="!collapsedNav">My bots</span>
+				<mat-icon mat-list-icon>android</mat-icon>
+			</mat-list-item>
+			<mat-list-item class="parent" [routerLink]="['/accesspoints']">
+				<span class="full-width" *ngIf="!collapsedNav">Access points</span>
+				<mat-icon mat-list-icon>share</mat-icon>
+			</mat-list-item>
+			<mat-list-item class="parent" [routerLink]="['/ranking']">
+				<span class="full-width" *ngIf="!collapsedNav">Bot ranking</span>
+				<mat-icon mat-list-icon>military_tech</mat-icon>
+			</mat-list-item>
+			<mat-list-item class="parent" (click)="onLogout()">
+				<span class="full-width" *ngIf="!collapsedNav">Exit</span>
+				<mat-icon mat-list-icon>exit_to_app</mat-icon>
+			</mat-list-item>
+		</mat-nav-list>
 	</mat-drawer>
 	<mat-drawer-content [ngClass]="{'sidenav-collapsed': collapsedNav && !mobileQuery.matches}">
 		<mat-toolbar>

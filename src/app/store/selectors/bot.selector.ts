@@ -38,6 +38,11 @@ export const getBotRanking = createSelector(
     state => state.botRanking
 );
 
+export const getLoadingRanking = createSelector(
+    getFeatureState,
+    state => state.loadingRanking
+);
+
 export const getCurrentBot = createSelector(
     getFeatureState,
     state => state.currentBot

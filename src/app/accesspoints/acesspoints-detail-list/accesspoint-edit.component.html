@@ -14,7 +14,8 @@
                       <br>
                       <mat-radio-group aria-labelledby="example-radio-group-label" class="example-radio-group" #Exchange="ngModel" name="Exchange" [(ngModel)]="selectedBroker">
                         <mat-radio-button class="example-radio-button" *ngFor="let broker of brokers$ | async" [value]="broker">
-                          {{broker.name}}
+                          
+                          <img style="width:80px;" src="./assets/img/{{broker.name}}.png">
                         </mat-radio-button>
                       </mat-radio-group>
                   </div>

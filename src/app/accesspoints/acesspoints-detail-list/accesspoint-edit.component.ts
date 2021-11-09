@@ -8,6 +8,7 @@ import { BrokerDetail } from 'src/app/broker/broker-detail.model';
 import * as fromStore from 'src/app/store';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-accesspoint-edit',
@@ -26,7 +27,20 @@ export class AccessPointEditComponent implements  OnInit {
       bearerToken : "",
       brokerId: -1
   };
-  brokers$: Observable<BrokerDetail[]> = this.store.select(fromStore.BotSelectors.getAllBrokers);;
+  brokers$: Observable<BrokerDetail[]> = this.store.select(fromStore.BotSelectors.getAllBrokers).pipe(
+    tap((brokers) => {
+      this.service.getAccessPoint(this.data.id).subscribe(
+        res => {
+          this.formModel = res as AccessPointDetail;
+          this.selectedBroker = brokers.find(broker => broker.id == this.formModel.brokerId);
+        },
+        err => {
+          console.log(err);
+        },
+      );
+  
+    })
+  );
   selectedBroker: BrokerDetail;
 
   constructor(
@@ -40,15 +54,6 @@ export class AccessPointEditComponent implements  OnInit {
   ngOnInit() {
     this.store.dispatch(fromStore.BotActions.loadAllBrokers());
     this.data = this.route.snapshot.params;
-    this.service.getAccessPoint(this.data.id).subscribe(
-      res => {
-        this.formModel = res as AccessPointDetail;
-      },
-      err => {
-        console.log(err);
-      },
-    );
-
   }
 
   onSubmit(form: NgForm) {

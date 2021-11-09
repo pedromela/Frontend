@@ -27,6 +27,10 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
     if (localStorage.getItem('token') != null)
       this.router.navigateByUrl('/home');
+    else {
+      this.store.dispatch(BotActions.clearCurrentBot());
+      this.store.dispatch(BotActions.clear());
+    }
   }
 
   onSubmit(form: NgForm) {

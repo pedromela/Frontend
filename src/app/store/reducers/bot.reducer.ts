@@ -30,6 +30,7 @@ export interface BotState {
     userBotList: BotDetail[];
     userVirtualBotList: BotDetail[];
     botRanking: BotRanking[];
+    loadingRanking: boolean;
     strategies: StrategyData[];
     activeTrades: TransactionDetail[];
     historyTrades: TransactionDetail[];
@@ -63,6 +64,7 @@ export const initialState: BotState = {
     userBotList: [],
     userVirtualBotList: [],
     botRanking: [],
+    loadingRanking: false,
     strategies: [],
     activeTrades: [],
     historyTrades: [],
@@ -146,12 +148,26 @@ export const BotReducer = createReducer(
       error: ''
     };
   }),
+  on(BotActions.loadRanking, (state): BotState => {
+      return {
+        ...state,
+        loadingRanking: true,
+        error: ''
+      };
+  }),
   on(BotAPIActions.loadRankingSuccess, (state, action): BotState => {
     return {
       ...state,
       botRanking: action.botRanking,
-      loading: false,
+      loadingRanking: false,
       error: ''
+    };
+  }),
+  on(BotAPIActions.loadRankingFailure, (state, action) => {
+    return {
+      ...state,
+      loadingRanking: false,
+      error: action.error
     };
   }),
   on(BotActions.resetNavigate, (state, action): BotState => {
@@ -243,7 +259,6 @@ export const BotReducer = createReducer(
     BotAPIActions.loadBrokerMarketsFailure,
     BotAPIActions.loadAccessPointsFailure,
     BotAPIActions.createUserBotRelationFailure,
-    BotAPIActions.loadRankingFailure,
     BotAPIActions.createBotFailure,
     BotAPIActions.modifyBotFailure,
     BotAPIActions.loadUserDetailFailure, (state, action) => {

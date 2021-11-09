@@ -74,9 +74,7 @@
         "serve": {
           "builder": "@angular-builders/custom-webpack:dev-server",
           "options": {
-            "browserTarget": "megaladon:build",
-            "sslKey": "../certs/m4d32tr4d3.ddns.net/private.key",
-            "sslCert": "../certs/m4d32tr4d3.ddns.net/certificate.crt"
+            "browserTarget": "megaladon:build"
           },
           "configurations": {
             "production": {

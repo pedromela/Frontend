@@ -7,7 +7,7 @@ import { BotState } from 'src/app/store';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import * as fromStore from 'src/app/store';
-import { delay } from 'rxjs/operators';
+import { delay, take } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { SubscriptionPackage } from 'src/app/shared/models/subscription-package.model';
 import { Router } from '@angular/router';
@@ -41,6 +41,7 @@ export class BotSettingsComponent implements OnInit, AfterViewInit {
   
   goToBotBacktesting() {
     this.subscriptionPackage$
+    .pipe(take(1))
     .subscribe((subscriptionPackage) => {
       if (subscriptionPackage && subscriptionPackage.backtesting) {
         this.router.navigate(['/bots/backtest', this.botDetail.botId]);
@@ -52,6 +53,7 @@ export class BotSettingsComponent implements OnInit, AfterViewInit {
 
   openEditDialog(): void {
     this.subscriptionPackage$
+    .pipe(take(1))
     .subscribe((subscriptionPackage) => {
       if (subscriptionPackage && subscriptionPackage.botCreation) {
         const dialogRef = this.dialog.open(BotEditDialogComponent, {
@@ -70,6 +72,7 @@ export class BotSettingsComponent implements OnInit, AfterViewInit {
 
   openCloneDialog(): void {
     this.subscriptionPackage$
+    .pipe(take(1))
     .subscribe((subscriptionPackage) => {
       if (subscriptionPackage && subscriptionPackage.botCreation) {
         const clone = {...this.botDetail};

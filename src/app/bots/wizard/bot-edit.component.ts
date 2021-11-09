@@ -3,9 +3,7 @@ import { Router } from '@angular/router';
 import { BotDetail } from '../bot-detail-list/bot-detail.model';
 import { FormGroup, NgForm } from '@angular/forms';
 import { StrategyData } from '../strategy/strategy-data.model';
-import { ToastrService } from 'ngx-toastr';
 import { BotIsVirtualComponent } from '../bot-detail-list/bot-isvirtual.component';
-import { BotDetailService } from 'src/app/services/bot-detail.service';
 import { StrategyDataService } from 'src/app/services/strategy-data.service';
 import { BotActions, BotSelectors, BotState } from 'src/app/store';
 import { Store } from '@ngrx/store';
@@ -13,7 +11,7 @@ import { delay, filter, take, tap } from 'rxjs/operators';
 import * as fromStore from 'src/app/store';
 import { Observable } from 'rxjs';
 import { SubSink } from 'subsink';
-
+import { cloneDeep } from 'lodash';
 @Component({
   selector: 'app-bot-edit',
   templateUrl: './bot-edit.component.html',
@@ -24,7 +22,7 @@ export class BotEditComponent implements OnInit, AfterViewInit {
   strategies$: Observable<StrategyData[]> = this.store.select(BotSelectors.getStrategies)
   .pipe(
     tap((strategies) => {
-      if (!strategies) {
+      if (!strategies || strategies.length == 0) {
         this.store.dispatch(BotActions.loadStrategies());
       }
     })
@@ -88,6 +86,10 @@ export class BotEditComponent implements OnInit, AfterViewInit {
     {value: 30, viewValue: 'M30'},
     {value: 60, viewValue: 'H1'},
   ];
+  BrokerTypes : any[] = [
+    {value: 0, viewValue: 'Exchange'},
+    {value: 1, viewValue: 'Margin'},
+  ];
 
   formGroup: FormGroup;
 
@@ -127,13 +129,13 @@ export class BotEditComponent implements OnInit, AfterViewInit {
     this._formModel.increase = this._formModel.increaseP > 0 ? this._formModel.increaseP/100 : 0; 
     this._formModel.decrease = this._formModel.decreaseP > 0 ? this._formModel.decreaseP/100 : 0; 
     this._formModel.trailingStopValue = this._formModel.trailingStopValueP > 0 ? this._formModel.trailingStopValueP/100 : 0; 
-    if(this._formModel.botId == null) {
+    if(this._formModel.botId == null || this._formModel.botId == "") {
       this._formModel.recentlyCreated = true;
-      this.store.dispatch(BotActions.createBot({ formData: this._formModel }));
+      this.store.dispatch(BotActions.createBot({ formData: cloneDeep(this._formModel) }));
     }
     else {
       this._formModel.recentlyModified = true;
-      this.store.dispatch(BotActions.modifyBot({ formData: this._formModel }));
+      this.store.dispatch(BotActions.modifyBot({ formData: cloneDeep(this._formModel) }));
     }
     this._subs.add(this.store.select(BotSelectors.getNavigate)
     .pipe(
