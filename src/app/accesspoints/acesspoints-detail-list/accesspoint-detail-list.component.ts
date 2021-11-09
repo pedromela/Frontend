@@ -36,7 +36,7 @@ export class AcessPointDetailListComponent implements  OnInit   {
     if (confirm('Are you sure to delete this record ?')) {
       this.service.deleteAccessPoint(id)
         .subscribe(res => {
-          this.service.refreshList();
+          this.store.dispatch(fromStore.BotActions.loadAccessPoints());
           this.toastr.warning('Deleted successfully', 'Access point');
         },
           err => {

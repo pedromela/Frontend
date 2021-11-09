@@ -124,6 +124,11 @@ mat-drawer {
     }
 }
 
+.mat-step-header .mat-step-icon-selected, .mat-step-header .mat-step-icon-state-done, .mat-step-header .mat-step-icon-state-edit {
+  background-color: #04c582;
+  color: #fff;
+}
+
 mat-drawer-content {
     transition-property: transform, margin-left, margin-right;
     &.sidenav-collapsed {

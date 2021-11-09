@@ -31,3 +31,9 @@
   .submenu.expanded {
     transform: scaleY(1);
   }
+
+  /* Trick */
+.trick { 
+  display:flex; 
+  flex-direction:column; 
+}

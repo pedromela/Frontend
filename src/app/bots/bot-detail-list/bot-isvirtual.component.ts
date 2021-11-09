@@ -13,7 +13,7 @@ import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-bot-isvirtual',
   templateUrl: './bot-isvirtual.component.html',
-  styles: []
+  styleUrls: ['./bot-isvirtual.component.scss']
 })
 export class BotIsVirtualComponent implements  OnInit {
   @Input() set formModel(formModel: BotDetail) {

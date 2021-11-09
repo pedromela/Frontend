@@ -24,4 +24,76 @@
         <button type="submit" class="btn btn-lg btn-block" [disabled]="form.invalid">Save</button>
         </div>
     </div>
-</form>    
+</form>
+  
+<mat-vertical-stepper linear #stepper [formGroup]="formGroup">
+    <mat-step [stepControl]="firstCtrl" [editable]="isEditable">
+            <ng-template matStepLabel>Fill out your strategy name</ng-template>
+            <mat-form-field>
+                <mat-label>Name</mat-label>
+                <input matInput formControlName="firstCtrl" placeholder="Strategy name" required>
+            </mat-form-field>
+            <div>
+                <button mat-button matStepperNext>Next</button>
+            </div>
+    </mat-step>
+    <mat-step [stepControl]="secondCtrl" [editable]="isEditable">
+            <ng-template matStepLabel>Fill out buy condition</ng-template>
+            <mat-form-field>
+                <mat-label>Buy condition</mat-label>
+                <input matInput formControlName="secondCtrl" placeholder=""
+                        required>
+            </mat-form-field>
+            <div>
+                <button mat-button matStepperPrevious>Back</button>
+                <button mat-button matStepperNext>Next</button>
+            </div>
+    </mat-step>
+    <mat-step [stepControl]="thirdCtrl" [editable]="isEditable">
+            <ng-template matStepLabel>Fill out sell condition</ng-template>
+            <mat-form-field>
+                <mat-label>Sell condition</mat-label>
+                <input matInput formControlName="thirdCtrl" placeholder=""
+                        required>
+            </mat-form-field>
+            <div>
+                <button mat-button matStepperPrevious>Back</button>
+                <button mat-button matStepperNext>Next</button>
+            </div>
+    </mat-step>
+    <mat-step [stepControl]="fourthCtrl" [editable]="isEditable">
+            <ng-template matStepLabel>Fill out buy close condition</ng-template>
+            <mat-form-field>
+                <mat-label>Buy close condition</mat-label>
+                <input matInput formControlName="fourthCtrl" placeholder=""
+                        required>
+            </mat-form-field>
+            <div>
+                <button mat-button matStepperPrevious>Back</button>
+                <button mat-button matStepperNext>Next</button>
+            </div>
+    </mat-step>
+    <mat-step [stepControl]="fifthCtrl" [editable]="isEditable">
+            <ng-template matStepLabel>Fill out sell close condition</ng-template>
+            <mat-form-field>
+                <mat-label>Sell close condition</mat-label>
+                <input matInput formControlName="fifthCtrl" placeholder=""
+                        required>
+            </mat-form-field>
+            <div>
+                <button mat-button matStepperPrevious>Back</button>
+                <button mat-button matStepperNext>Next</button>
+            </div>
+    </mat-step>
+    <mat-step>
+        <ng-template matStepLabel>Done</ng-template>
+        <div class="col-md-8 offset-md-2">
+            <button type="submit" class="btn btn-lg btn-block" [disabled]="formGroup.invalid">Save</button>
+        </div>
+
+        <div>
+            <button mat-button matStepperPrevious>Back</button>
+            <button mat-button (click)="stepper.reset()">Reset</button>
+        </div>
+    </mat-step>
+</mat-vertical-stepper>

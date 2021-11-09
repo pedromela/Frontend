@@ -15,7 +15,7 @@ import { cloneDeep } from 'lodash';
 @Component({
   selector: 'app-bot-edit',
   templateUrl: './bot-edit.component.html',
-  styles: []
+  styleUrls: ['./bot-edit.component.scss']
 })
 export class BotEditComponent implements OnInit, AfterViewInit {
   loading$: Observable<boolean> = this.store.select(fromStore.BotSelectors.getLoading).pipe(delay(50));
@@ -49,7 +49,7 @@ export class BotEditComponent implements OnInit, AfterViewInit {
       decreaseP: 0,
       increaseP: 0,
       trailingStopValueP: 0,
-      defaultTransactionAmount: 1,
+      defaultTransactionAmount: 0,
       startEquity: 0,
       smartBuyTransactions: false,
       smartSellTransactions: false,
@@ -75,7 +75,7 @@ export class BotEditComponent implements OnInit, AfterViewInit {
       recentlyCreated: false,
       recentlyModified: false,
       recentlyDeleted: false,
-      maxSellTransactionsByFrame: 0,
+      maxSellTransactionsByFrame: 1,
       quickReversal: false,
       superReversal: false
   };

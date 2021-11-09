@@ -41,7 +41,7 @@
                   </div>
                   <div class="form-row">
                     <div class="form-group col-md-8 offset-md-2">
-                      <button type="submit" class="btn btn-lg btn-block" [disabled]="form.invalid">Edit</button>
+                      <button type="submit" class="btn btn-lg btn-block" [disabled]="form.invalid">{{ create ? 'Create' : 'Edit' }}</button>
                     </div>
                   </div>
                 </form>
@@ -50,4 +50,5 @@
       </div>
     </div>
   </div>
+  <br>
 </app-sidenav>

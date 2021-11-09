@@ -17,6 +17,7 @@ import { tap } from 'rxjs/operators';
 })
 export class AccessPointEditComponent implements  OnInit { 
     data: Params;
+    @Input() create = true;
     @Input() formModel : AccessPointDetail = {
       id: "",
       name: "",
@@ -57,17 +58,32 @@ export class AccessPointEditComponent implements  OnInit {
   }
 
   onSubmit(form: NgForm) {
-    this.service.editAccessPoint(this.formModel).subscribe(
-      (res: any) => {
-        this.router.navigateByUrl("accesspoints")
-      },
-      err => {
-        if (err.status == 400)
-          this.toastr.error('Something went wrong.', 'Creation failed.');
-        else
-          console.log(err);
-      }
-    );
+    if(this.create) {
+      this.formModel.brokerId = this.selectedBroker.id;
+      this.service.createAccessPoint(this.formModel).subscribe(
+        (res: any) => {
+          this.router.navigateByUrl("accesspoints")
+        },
+        err => {
+          if (err.status == 400)
+            this.toastr.error('Something went wrong.', 'Creation failed.');
+          else
+            console.log(err);
+        }
+      );
+    } else {
+      this.service.editAccessPoint(this.formModel).subscribe(
+        (res: any) => {
+          this.router.navigateByUrl("accesspoints")
+        },
+        err => {
+          if (err.status == 400)
+            this.toastr.error('Something went wrong.', 'Modification failed.');
+          else
+            console.log(err);
+        }
+      );
+    }
   }
 
 }

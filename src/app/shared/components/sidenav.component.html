@@ -31,7 +31,7 @@
 		</mat-nav-list>
 	</mat-drawer>
 	<mat-drawer-content [ngClass]="{'sidenav-collapsed': collapsedNav && !mobileQuery.matches}">
-		<mat-toolbar>
+		<mat-toolbar class="sticky-top">
 			<button class="btn btn-dark" (click)="mobileQuery.matches ? snav.toggle() : collapsedNav = !collapsedNav">
         		<mat-icon>menu</mat-icon>
       		</button>
@@ -42,7 +42,7 @@
 				{{ ' Hello, ' + userDetails.userName }}
 			</p>
 		</mat-toolbar>
-		<ng-content></ng-content>
+		<ng-content class="trick"></ng-content>
 		<mat-divider></mat-divider>
 		<app-sidenav-footer></app-sidenav-footer>
 	</mat-drawer-content>
