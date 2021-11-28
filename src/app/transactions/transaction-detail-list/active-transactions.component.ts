@@ -17,7 +17,7 @@ import { SubSink } from 'subsink';
   styles: []
 })
 export class ActiveTransactionListComponent implements  OnInit, AfterViewInit, OnDestroy {
-  loading$: Observable<boolean> = this.store.select(fromStore.BotSelectors.getCurrentBotLoading).pipe(delay(50));
+  loading$: Observable<boolean> = this.store.select(fromStore.BotSelectors.getCurrentBotActiveTradesLoading).pipe(delay(50));
   transactions$: Observable<TransactionDetail[]> = this.store.select(fromStore.BotSelectors.getCurrentBotActiveTrades);
   currentBotId$: Observable<string> = this.store.select(fromStore.BotSelectors.getCurrentBotId);
 

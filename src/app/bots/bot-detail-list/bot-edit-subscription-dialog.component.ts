@@ -30,5 +30,6 @@ import * as fromStore from 'src/app/store';
 
     onSubmit(userBotRelation: UserBotRelation) {
       this.dialogRef.close();
+      this.store.dispatch(fromStore.BotActions.loadCurrentBotSettings());
     }
   }

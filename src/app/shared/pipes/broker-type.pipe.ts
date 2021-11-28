@@ -8,6 +8,10 @@ export class BrokerTypePipe implements PipeTransform {
                 return 'Exchange';
             case 1:
                 return 'Margin';
+            case 2:
+                return 'Exchange Dev';
+            case 3:
+                return 'Margin Dev';
             default:
                 return '';
         }

@@ -123,6 +123,26 @@ export const getCurrentBotLoading = createSelector(
     state => state.currentBotLoading
 );
 
+export const getCurrentBotSettingsLoading = createSelector(
+    getFeatureState,
+    state => state.currentBotSettingsLoading
+);
+
+export const getCurrentBotProfitLoading = createSelector(
+    getFeatureState,
+    state => state.currentBotProfitLoading
+);
+
+export const getCurrentBotActiveTradesLoading = createSelector(
+    getFeatureState,
+    state => state.currentBotActiveTradesLoading
+);
+
+export const getCurrentBotTradeHistoryLoading = createSelector(
+    getFeatureState,
+    state => state.currentBotTradeHistoryLoading
+);
+
 export const getUserBots = createSelector(
     getFeatureState,
     state => state.userBotList

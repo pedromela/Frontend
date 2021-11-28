@@ -17,6 +17,10 @@ export interface BotState {
     token: string;
     loading: boolean;
     currentBotLoading: boolean;
+    currentBotSettingsLoading: boolean;
+    currentBotProfitLoading: boolean;
+    currentBotActiveTradesLoading: boolean;
+    currentBotTradeHistoryLoading: boolean;
     currentBotReloadData: boolean;
     userDetail: UserDetail;
     subscriptionPackage: SubscriptionPackage;
@@ -51,6 +55,10 @@ export const initialState: BotState = {
     token: null,
     loading: false,
     currentBotLoading: true,
+    currentBotSettingsLoading: false,
+    currentBotProfitLoading: false,
+    currentBotActiveTradesLoading: false,
+    currentBotTradeHistoryLoading: false,
     currentBotReloadData: false,
     userDetail: null,
     subscriptionPackage: null,
@@ -272,10 +280,7 @@ export const BotReducer = createReducer(
     BotActions.loadCurrentBotId,
     BotActions.loadCurrentBotSettings,
     BotActions.loadCurrentBotPrices,
-    BotActions.loadCurrentBotProfit,
-    BotActions.loadCurrentBotProfitData,
-    BotActions.loadCurrentBotActiveTrades,
-    BotActions.loadCurrentBotHistoryTrades, (state): BotState => {
+    BotActions.loadCurrentBotProfit, (state): BotState => {
       return {
         ...state,
         currentBotLoading: true,
@@ -314,11 +319,26 @@ export const BotReducer = createReducer(
       error: ''
     };
   }),
+  on(BotActions.loadCurrentBotSettings, (state): BotState => {
+      return {
+        ...state,
+        currentBotSettingsLoading: true,
+        error: ''
+      };
+  }),
   on(BotAPIActions.loadCurrentBotSettingsSuccess, (state, action): BotState => {
     return {
       ...state,
+      currentBotSettingsLoading: false,
       botSettings: action.botSettings,
       error: ''
+    };
+  }),
+  on(BotAPIActions.loadCurrentBotSettingsFailure, (state, action) => {
+    return {
+      ...state,
+      currentBotSettingsLoading: false,
+      error: action.error
     };
   }),
   on(BotAPIActions.loadCurrentBotPricesSuccess, (state, action): BotState => {
@@ -345,25 +365,70 @@ export const BotReducer = createReducer(
       error: ''
     };
   }),
+  on(BotActions.loadCurrentBotProfitData, (state): BotState => {
+    return {
+      ...state,
+      currentBotProfitLoading: true,
+      error: ''
+    };
+  }),
   on(BotAPIActions.loadCurrentBotProfitDataSuccess, (state, action): BotState => {
     return {
       ...state,
+      currentBotProfitLoading: false,
       botProfitData: action.botProfitData,
       error: ''
     };
-  }),  
+  }),
+  on(BotAPIActions.loadCurrentBotProfitDataFailure, (state, action) => {
+    return {
+      ...state,
+      currentBotProfitLoading: false,
+      error: action.error
+    };
+  }),
+  on(BotActions.loadCurrentBotActiveTrades, (state): BotState => {
+    return {
+      ...state,
+      currentBotActiveTradesLoading: true,
+      error: ''
+    };
+  }),
   on(BotAPIActions.loadCurrentBotActiveTradesSuccess, (state, action): BotState => {
     return {
       ...state,
+      currentBotActiveTradesLoading: false,
       activeTrades: action.activeTrades,
       error: ''
     };
-  }),  
+  }),
+  on(BotAPIActions.loadCurrentBotActiveTradesFailure, (state, action) => {
+    return {
+      ...state,
+      currentBotActiveTradesLoading: false,
+      error: action.error
+    };
+  }),
+  on(BotActions.loadCurrentBotHistoryTrades, (state): BotState => {
+    return {
+      ...state,
+      currentBotTradeHistoryLoading: true,
+      error: ''
+    };
+  }), 
   on(BotAPIActions.loadCurrentBotHistoryTradesSuccess, (state, action): BotState => {
     return {
       ...state,
+      currentBotTradeHistoryLoading: false,
       historyTrades: action.historyTrades,
       error: ''
+    };
+  }),
+  on(BotAPIActions.loadCurrentBotActiveTradesFailure, (state, action) => {
+    return {
+      ...state,
+      currentBotTradeHistoryLoading: false,
+      error: action.error
     };
   }),
   on(BotActions.setCurrentBotFrom, (state, action): BotState => {
@@ -391,8 +456,6 @@ export const BotReducer = createReducer(
     BotAPIActions.loadCurrentBotIdFailure,
     BotAPIActions.loadCurrentBotSettingsFailure,
     BotAPIActions.loadCurrentBotProfitFailure,
-    BotAPIActions.loadCurrentBotProfitDataFailure,
-    BotAPIActions.loadCurrentBotActiveTradesFailure,
     BotAPIActions.loadCurrentBotHistoryTradesFailure, (state, action) => {
     return {
       ...state,

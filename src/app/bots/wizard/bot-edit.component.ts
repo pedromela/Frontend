@@ -89,6 +89,8 @@ export class BotEditComponent implements OnInit, AfterViewInit {
   BrokerTypes : any[] = [
     {value: 0, viewValue: 'Exchange'},
     {value: 1, viewValue: 'Margin'},
+    {value: 2, viewValue: 'Exchange Dev'},
+    {value: 3, viewValue: 'Margin Dev'},
   ];
 
   formGroup: FormGroup;

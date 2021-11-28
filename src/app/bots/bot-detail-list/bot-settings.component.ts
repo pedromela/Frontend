@@ -20,7 +20,7 @@ import { Router } from '@angular/router';
 export class BotSettingsComponent implements OnInit, AfterViewInit {
   @Input() botDetail: BotDetail;
   //isAdmin$: Observable<boolean> = this.store.select(fromStore.BotSelectors.isAdmin);
-  loading$: Observable<boolean> = this.store.select(fromStore.BotSelectors.getCurrentBotLoading).pipe(delay(50));
+  loading$: Observable<boolean> = this.store.select(fromStore.BotSelectors.getCurrentBotSettingsLoading).pipe(delay(50));
   settingsData$: Observable<string[][]> = this.store.select(fromStore.BotSelectors.getCurrentBotSettings);
   subscriptionPackage$: Observable<SubscriptionPackage> = this.store.select(fromStore.BotSelectors.getSubscriptionPackage);
 

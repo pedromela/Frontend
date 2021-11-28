@@ -14,10 +14,10 @@ import { SubSink } from 'subsink';
 @Component({
   selector: 'app-bot-profit',
   templateUrl: './bot-profit.component.html',
-  styles: []
+  styleUrls: ['./bot-profit.component.scss']
 })
 export class BotProfitComponent implements OnInit, AfterViewInit, OnDestroy {
-  loading$: Observable<boolean> = this.store.select(fromStore.BotSelectors.getCurrentBotLoading).pipe(delay(50));
+  loading$: Observable<boolean> = this.store.select(fromStore.BotSelectors.getCurrentBotProfitLoading).pipe(delay(50));
   profitSettings$: Observable<string[][]> = this.store.select(fromStore.BotSelectors.getCurrentBotProfitSettings);
   profitData$: Observable<BotProfit[]> = this.store.select(fromStore.BotSelectors.getCurrentBotProfitData);
 

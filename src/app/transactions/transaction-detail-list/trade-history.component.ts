@@ -19,7 +19,7 @@ export class TradeHistoryComponent implements OnInit, AfterViewInit, OnDestroy {
   data: Params;
   symbol1: string;
   symbol2: string;
-  loading$: Observable<boolean> = this.store.select(fromStore.BotSelectors.getCurrentBotLoading).pipe(delay(50));
+  loading$: Observable<boolean> = this.store.select(fromStore.BotSelectors.getCurrentBotTradeHistoryLoading).pipe(delay(50));
   transactions$: Observable<TransactionDetail[]> = this.store.select(fromStore.BotSelectors.getCurrentBotHistoryTrades);
   currentBotId$: Observable<string> = this.store.select(fromStore.BotSelectors.getCurrentBotId);
 

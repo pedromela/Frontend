@@ -24,7 +24,7 @@ import { ResizeObserver } from "resize-observer";
 @Component({
   selector: "app-tradingviewchart",
   templateUrl: "./tradingviewchart.component.html",
-  styleUrls: ["./tradingviewchart.component.css"]
+  styleUrls: ["./tradingviewchart.component.scss"]
 })
 export class TradingViewChartComponent implements AfterViewInit, OnInit, OnDestroy {
   @Input() botId: string;
