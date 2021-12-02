@@ -19,8 +19,10 @@ export interface BotState {
     currentBotLoading: boolean;
     currentBotSettingsLoading: boolean;
     currentBotProfitLoading: boolean;
+    currentBotProfitDataLoading: boolean;
     currentBotActiveTradesLoading: boolean;
     currentBotTradeHistoryLoading: boolean;
+    currentBotChartLoading: boolean;
     currentBotReloadData: boolean;
     userDetail: UserDetail;
     subscriptionPackage: SubscriptionPackage;
@@ -40,6 +42,8 @@ export interface BotState {
     historyTrades: TransactionDetail[];
     activeTradesCount: number;
     historyTradesCount: number;
+    reloadActiveTrades: boolean;
+    reloadHistoryTrades: boolean;
     priceSeriesData: Candle[];
     indicatorSeriesData: IndicatorSeries[];
     allMarkets: string[];
@@ -57,8 +61,10 @@ export const initialState: BotState = {
     currentBotLoading: true,
     currentBotSettingsLoading: false,
     currentBotProfitLoading: false,
+    currentBotProfitDataLoading: false,
     currentBotActiveTradesLoading: false,
     currentBotTradeHistoryLoading: false,
+    currentBotChartLoading: false,
     currentBotReloadData: false,
     userDetail: null,
     subscriptionPackage: null,
@@ -87,6 +93,8 @@ export const initialState: BotState = {
     error: null,
     navigate: false,
     reloadData: false,
+    reloadActiveTrades: false,
+    reloadHistoryTrades: false
 };
 
 export const BotReducer = createReducer(
@@ -279,7 +287,6 @@ export const BotReducer = createReducer(
   on(BotActions.loadCurrentBot,
     BotActions.loadCurrentBotId,
     BotActions.loadCurrentBotSettings,
-    BotActions.loadCurrentBotPrices,
     BotActions.loadCurrentBotProfit, (state): BotState => {
       return {
         ...state,
@@ -341,28 +348,29 @@ export const BotReducer = createReducer(
       error: action.error
     };
   }),
+  on(BotActions.loadCurrentBotPrices, (state): BotState => {
+    return {
+      ...state,
+      currentBotChartLoading: true,
+      error: ''
+    };
+  }),
   on(BotAPIActions.loadCurrentBotPricesSuccess, (state, action): BotState => {
     return {
       ...state,
       indicatorSeriesData: action.indicatorSeriesData,
       priceSeriesData: action.timeSeriesData,
       currentBotLoading: false,
+      currentBotChartLoading: false,
       currentBotReloadData: action.reloadData,
       error: ''
     };
   }),
-  on(BotAPIActions.loadCurrentBotProfitSuccess, (state, action): BotState => {
-    const activeTrades = action.botProfitSettings.find((setting) => setting[0] === 'Active trades');
-    const historyTrades = action.botProfitSettings.find((setting) => setting[0] === 'Positions');
-    const activeTradesCount = +activeTrades[1];
-
-    const historyTradesCount = +historyTrades[1];
+  on(BotAPIActions.loadCurrentBotPricesFailure, (state, action) => {
     return {
       ...state,
-      botProfitSettings: action.botProfitSettings,
-      activeTradesCount: activeTradesCount,
-      historyTradesCount: historyTradesCount,
-      error: ''
+      currentBotChartLoading: false,
+      error: action.error
     };
   }),
   on(BotActions.loadCurrentBotProfitData, (state): BotState => {
@@ -372,10 +380,43 @@ export const BotReducer = createReducer(
       error: ''
     };
   }),
-  on(BotAPIActions.loadCurrentBotProfitDataSuccess, (state, action): BotState => {
+  on(BotAPIActions.loadCurrentBotProfitSuccess, (state, action): BotState => {
+    const activeTrades = action.botProfitSettings.find((setting) => setting[0] === 'Active trades');
+    const historyTrades = action.botProfitSettings.find((setting) => setting[0] === 'Positions');
+    const activeTradesCount = +activeTrades[1];
+    const historyTradesCount = +historyTrades[1];
+    const reloadActiveTrades = activeTradesCount === state.activeTradesCount ? false : true;
+    const reloadHistoryTrades = historyTradesCount === state.historyTradesCount ? false : true;
+
+    return {
+      ...state,
+      botProfitSettings: action.botProfitSettings,
+      activeTradesCount: activeTradesCount,
+      historyTradesCount: historyTradesCount,
+      reloadActiveTrades: reloadActiveTrades,
+      reloadHistoryTrades: reloadHistoryTrades,
+      currentBotProfitLoading: false,
+      error: ''
+    };
+  }),
+  on(BotAPIActions.loadCurrentBotProfitFailure, (state, action) => {
     return {
       ...state,
       currentBotProfitLoading: false,
+      error: action.error
+    };
+  }),
+  on(BotActions.loadCurrentBotProfitData, (state): BotState => {
+    return {
+      ...state,
+      currentBotProfitDataLoading: true,
+      error: ''
+    };
+  }),
+  on(BotAPIActions.loadCurrentBotProfitDataSuccess, (state, action): BotState => {
+    return {
+      ...state,
+      currentBotProfitDataLoading: false,
       botProfitData: action.botProfitData,
       error: ''
     };
@@ -383,7 +424,7 @@ export const BotReducer = createReducer(
   on(BotAPIActions.loadCurrentBotProfitDataFailure, (state, action) => {
     return {
       ...state,
-      currentBotProfitLoading: false,
+      currentBotProfitDataLoading: false,
       error: action.error
     };
   }),

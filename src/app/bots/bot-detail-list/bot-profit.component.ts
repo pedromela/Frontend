@@ -6,8 +6,8 @@ import { BotProfit } from './bot-profit.model';
 import { BotState } from 'src/app/store';
 import { Store } from '@ngrx/store';
 import * as fromStore from 'src/app/store';
-import { combineLatest, Observable } from 'rxjs';
-import { delay, distinctUntilChanged, filter, take } from 'rxjs/operators';
+import { combineLatest, interval, Observable } from 'rxjs';
+import { delay, distinctUntilChanged, filter, map, take } from 'rxjs/operators';
 import { ResizeObserver } from 'resize-observer';
 import { SubSink } from 'subsink';
 
@@ -17,7 +17,13 @@ import { SubSink } from 'subsink';
   styleUrls: ['./bot-profit.component.scss']
 })
 export class BotProfitComponent implements OnInit, AfterViewInit, OnDestroy {
-  loading$: Observable<boolean> = this.store.select(fromStore.BotSelectors.getCurrentBotProfitLoading).pipe(delay(50));
+  loading$: Observable<boolean> = combineLatest([
+    this.store.select(fromStore.BotSelectors.getCurrentBotProfitLoading).pipe(delay(50)),
+    this.store.select(fromStore.BotSelectors.getCurrentBotProfitDataLoading).pipe(delay(50))
+  ]).pipe(
+    map(([profitLoading, proditDataLoading]) => {
+      return profitLoading || proditDataLoading;
+  }));
   profitSettings$: Observable<string[][]> = this.store.select(fromStore.BotSelectors.getCurrentBotProfitSettings);
   profitData$: Observable<BotProfit[]> = this.store.select(fromStore.BotSelectors.getCurrentBotProfitData);
 
@@ -37,14 +43,18 @@ export class BotProfitComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit() {
-    this._subs.add(this.store.select(fromStore.BotSelectors.getCurrentBotId)
+    this._subs.add(this.store.select(fromStore.BotSelectors.getCurrentBot)
     .pipe(
-      filter((botId) => {
-        return !!botId;
+      filter((botDetail) => {
+        return !!botDetail;
       }),
     )
-    .subscribe(() => {
+    .subscribe((botDetail) => {
       this.store.dispatch(fromStore.BotActions.loadCurrentBotProfit());
+      this._subs.add(interval(botDetail.timeFrame * 60000)
+      .subscribe(() => {
+        this.store.dispatch(fromStore.BotActions.loadCurrentBotProfit());
+      }));
     }));
 
     this._subs.add(combineLatest([

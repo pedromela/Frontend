@@ -40,11 +40,12 @@ export class TradeHistoryComponent implements OnInit, AfterViewInit, OnDestroy {
       this.store.select(fromStore.BotSelectors.getCurrentBot),
       this.store.select(fromStore.BotSelectors.getCurrentBotFrom),
       this.store.select(fromStore.BotSelectors.getCurrentBotTo),
+      this.store.select(fromStore.BotSelectors.getCurrentBotReloadHistoryTrades),
     ])
     .pipe(
       distinctUntilChanged(),
-      filter(([botParameters, from, to]) => {
-        return !!botParameters && !!from && !!to
+      filter(([botParameters, from, to, reload]) => {
+        return (!!botParameters && !!from && !!to) || reload
       }),
     )
     .subscribe(([, from, to]) => {
