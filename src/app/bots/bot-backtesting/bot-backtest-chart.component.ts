@@ -19,8 +19,9 @@ import { Candle } from "src/app/plot/candlechart/candle.model";
 import { BarDataUnit } from "src/app/plot/tradingviewchart/bardataunit.model";
 
 @Component({
-  selector: "app-bot-backtest-chart",
-  templateUrl: "./bot-backtest-chart.component.html"
+  selector: 'app-bot-backtest-chart',
+  templateUrl: './bot-backtest-chart.component.html',
+  styleUrls: ['bot-backtest-chart.component.scss']
 })
 export class BotBacktestChartComponent implements AfterViewInit, OnInit, OnDestroy {
   @Input() botId: string;

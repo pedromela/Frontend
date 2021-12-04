@@ -4,7 +4,6 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { delay } from 'rxjs/operators';
 import { SubSink } from 'subsink';
 import * as fromStore from 'src/app/bots/bot-backtesting/store';
 import { BacktesterSignalRService } from 'src/app/services/backtester-signal-r.service';
@@ -23,6 +22,7 @@ import {
 } from "ng-apexcharts";
 import { ChartModel } from 'src/app/shared/interfaces/chartmodel';
 import { ToastrService } from 'ngx-toastr';
+import { BotDetail } from '../bot-detail-list/bot-detail.model';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -47,6 +47,7 @@ export class BotBacktestComponent implements OnInit, OnDestroy, AfterViewInit {
 
   loading: boolean = false;
   data$: Observable<ChartModel[]> = this.backtesterSignalRService.dataSubject.asObservable();
+  botDetail$: Observable<BotDetail> = this.store.select(fromStore.BotBacktestSelectors.getCurrentBot);
 
   private botId: string;
   today = new Date();

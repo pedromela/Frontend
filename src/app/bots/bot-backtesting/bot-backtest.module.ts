@@ -10,6 +10,7 @@ import { BotBacktestRoutingModule } from './bot-backtest-routing.module';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { PlotModule } from 'src/app/plot/plot.module';
 import { BotBacktestChartComponent } from './bot-backtest-chart.component';
+import { BotDetailModule } from '../bot-detail-list/bot-detail.module';
 
 
 @NgModule({
@@ -28,6 +29,7 @@ import { BotBacktestChartComponent } from './bot-backtest-chart.component';
     MaterialModule,
     SharedModule,
     PlotModule,
+    BotDetailModule,
     NgApexchartsModule
   ],
   providers: []

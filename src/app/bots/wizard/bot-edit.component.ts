@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { BotDetail } from '../bot-detail-list/bot-detail.model';
 import { FormGroup, NgForm } from '@angular/forms';
 import { StrategyData } from '../strategy/strategy-data.model';
-import { BotIsVirtualComponent } from '../bot-detail-list/bot-isvirtual.component';
+import { BotIsVirtualComponent } from './bot-isvirtual.component';
 import { StrategyDataService } from 'src/app/services/strategy-data.service';
 import { BotActions, BotSelectors, BotState } from 'src/app/store';
 import { Store } from '@ngrx/store';

@@ -5,7 +5,7 @@ import { Store } from "@ngrx/store";
 import { Observable, of } from "rxjs";
 import { BotDetailService } from "src/app/services/bot-detail.service";
 import { BotDetail } from "../bot-detail-list/bot-detail.model";
-import { BotIsVirtualComponent } from "../bot-detail-list/bot-isvirtual.component";
+import { BotIsVirtualComponent } from "../wizard/bot-isvirtual.component";
 import { UserBotRelation } from "../bot-detail-list/user-bot-relation.model";
 import { BotRanking } from "./bot-ranking.model";
 import * as fromStore from 'src/app/store';
