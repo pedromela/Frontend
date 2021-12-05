@@ -87,3 +87,23 @@ export const getCurrentBotLoading = createSelector(
     getFeatureState,
     state => state.currentBotLoading
 );
+
+export const getCurrentBotSettingsLoading = createSelector(
+    getFeatureState,
+    state => state.currentBotSettingsLoading
+);
+
+export const getCurrentBotProfitLoading = createSelector(
+    getFeatureState,
+    state => state.currentBotProfitLoading
+);
+
+export const getCurrentBotProfitDataLoading = createSelector(
+    getFeatureState,
+    state => state.currentBotProfitDataLoading
+);
+
+export const getCurrentBotBacktesting = createSelector(
+    getFeatureState,
+    state => state.backtesting
+);

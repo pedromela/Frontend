@@ -286,8 +286,7 @@ export const BotReducer = createReducer(
   }),
   on(BotActions.loadCurrentBot,
     BotActions.loadCurrentBotId,
-    BotActions.loadCurrentBotSettings,
-    BotActions.loadCurrentBotProfit, (state): BotState => {
+    BotActions.loadCurrentBotSettings, (state): BotState => {
       return {
         ...state,
         currentBotLoading: true,
@@ -373,7 +372,7 @@ export const BotReducer = createReducer(
       error: action.error
     };
   }),
-  on(BotActions.loadCurrentBotProfitData, (state): BotState => {
+  on(BotActions.loadCurrentBotProfit, (state): BotState => {
     return {
       ...state,
       currentBotProfitLoading: true,

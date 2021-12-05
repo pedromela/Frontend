@@ -2,10 +2,10 @@
     <div class="card-grid card__content">
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-7 col-lg-6">
-              <app-bot-settings [botDetail]="botDetail$ | async"></app-bot-settings>
+              <app-bot-backtest-settings [botDetail]="botDetail$ | async"></app-bot-backtest-settings>
             </div>
             <div class="col-xs-12 col-sm-12 col-md-5 col-lg-6">
-              <app-bot-profit></app-bot-profit>
+              <app-bot-backtest-profit></app-bot-backtest-profit>
             </div>
         </div>
         <div class="row">
@@ -45,7 +45,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-4">
-                                        <div class="form-group">
+                                        <div class="row wrapper">
                                             <button
                                                 mat-button
                                                 matSuffix
@@ -56,6 +56,9 @@
                                             >
                                                 <mat-icon>search</mat-icon>
                                             </button>
+                                            <div *ngIf="backtesting$ | async">
+                                                <mat-spinner [diameter]="30"></mat-spinner>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

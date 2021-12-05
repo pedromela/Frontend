@@ -7,7 +7,6 @@ import { Observable } from 'rxjs';
 import { SubSink } from 'subsink';
 import * as fromStore from 'src/app/bots/bot-backtesting/store';
 import { BacktesterSignalRService } from 'src/app/services/backtester-signal-r.service';
-import { URLS } from 'src/app/services/urls.base';
 import {
   ChartComponent,
   ApexAxisChartSeries,
@@ -20,9 +19,10 @@ import {
   ApexLegend,
   ApexGrid
 } from "ng-apexcharts";
-import { ChartModel } from 'src/app/shared/interfaces/chartmodel';
+import { BacktestData } from 'src/app/shared/interfaces/chartmodel';
 import { ToastrService } from 'ngx-toastr';
 import { BotDetail } from '../bot-detail-list/bot-detail.model';
+import { delay, filter } from 'rxjs/operators';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -46,7 +46,9 @@ export class BotBacktestComponent implements OnInit, OnDestroy, AfterViewInit {
   public chartOptions: Partial<ChartOptions>;
 
   loading: boolean = false;
-  data$: Observable<ChartModel[]> = this.backtesterSignalRService.dataSubject.asObservable();
+  backtesting$: Observable<boolean> = this.store.select(fromStore.BotBacktestSelectors.getCurrentBotBacktesting).pipe(delay(50));
+  loading$: Observable<boolean> = this.store.select(fromStore.BotBacktestSelectors.getCurrentBotSettingsLoading).pipe(delay(50));
+  data$: Observable<BacktestData> = this.backtesterSignalRService.dataSubject.asObservable();
   botDetail$: Observable<BotDetail> = this.store.select(fromStore.BotBacktestSelectors.getCurrentBot);
 
   private botId: string;
@@ -138,11 +140,13 @@ export class BotBacktestComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this._subs.add(this.data$.subscribe((data) => {
+    this._subs.add(this.data$
+    .pipe(filter((data) => data != undefined))
+    .subscribe((data) => {
       if (data) {
-        const dataMapped = data.map((e) => e.data[0]);
-        if(dataMapped[0] === -1 && dataMapped[1] === -1) {
-          this.backtesterSignalRService.closeConnection();
+        if(data.state === 2) {
+          //this.backtesterSignalRService.closeConnection();
+          this.store.dispatch(fromStore.BotBacktestActions.stopBacktest());
           this.store.dispatch(fromStore.BotBacktestActions.loadCurrentBotPrices({
             from: this.startDateCtrl.value,
             to: this.endDateCtrl.value,
@@ -152,11 +156,12 @@ export class BotBacktestComponent implements OnInit, OnDestroy, AfterViewInit {
           this.store.dispatch(fromStore.BotBacktestActions.loadCurrentBotActiveTrades({ from: this.startDateCtrl.value, to: this.endDateCtrl.value }));
           this.toastr.info('Backtest completed!', 'Backtest');
           this.loading = false;
-          return;
+        } else {
+          this.store.dispatch(fromStore.BotBacktestActions.loadCurrentBotProfit({ data }));
+          this.chart.updateSeries([{
+            data : [data.positions, data.successes]
+          }]);
         }
-        this.chart.updateSeries([{
-          data : dataMapped
-        }]);
       }
     }));
   }
@@ -166,29 +171,15 @@ export class BotBacktestComponent implements OnInit, OnDestroy, AfterViewInit {
     this.store.dispatch(fromStore.BotBacktestActions.clearCurrentBot());
   }
 
-  private startHttpRequest(botId: string, fromDate: Date, toDate: Date) {
-    let searchparams = new HttpParams();
-    searchparams = searchparams.append('botId', botId);
-    searchparams = searchparams.append('fromDate', fromDate.toISOString());
-    searchparams = searchparams.append('toDate', toDate.toISOString());
-
-    const str = searchparams.toString();
-    this.http.get<any>(URLS.backtesterapiURL + '/backtester?' + str)
-      .subscribe(res => {
-        this.toastr.info(res.message, 'Backtest');
-      })
-  }
-
   public chartClicked = (event) => {
     this.backtesterSignalRService.broadcastChartData();
   }
 
   public backtest() {
     this.loading = true;
-    this.backtesterSignalRService.startConnection(this.botId, this.startDateCtrl.value, this.endDateCtrl.value);
-    this.backtesterSignalRService.addTransferChartDataListener();
-    this.backtesterSignalRService.addBroadcastChartDataListener();
-    this.startHttpRequest(this.botId, this.startDateCtrl.value, this.endDateCtrl.value);
+    
+    //this.backtesterSignalRService.startConnection(this.botId, this.startDateCtrl.value, this.endDateCtrl.value);
+    this.store.dispatch(fromStore.BotBacktestActions.startBacktest({ botId: this.botId, from: this.startDateCtrl.value, to: this.endDateCtrl.value }));
     this.store.dispatch(fromStore.BotBacktestActions.setCurrentBotFrom({ from: this.startDateCtrl.value }));
     this.store.dispatch(fromStore.BotBacktestActions.setCurrentBotTo({ to: this.endDateCtrl.value }));
   }

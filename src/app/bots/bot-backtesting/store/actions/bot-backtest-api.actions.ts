@@ -1,15 +1,9 @@
 import { createAction, props } from '@ngrx/store';
-import { AccessPointDetail } from 'src/app/accesspoints/acesspoints-detail-list/accesspoint-detail.model';
 import { BotDetail } from 'src/app/bots/bot-detail-list/bot-detail.model';
 import { BotProfit } from 'src/app/bots/bot-detail-list/bot-profit.model';
-import { BotRanking } from 'src/app/bots/bot-ranking/bot-ranking.model';
-import { StrategyData } from 'src/app/bots/strategy/strategy-data.model';
-import { BrokerDetail } from 'src/app/broker/broker-detail.model';
 import { Candle } from 'src/app/plot/candlechart/candle.model';
 import { IndicatorSeries } from 'src/app/plot/tradingviewchart/indicatorseries.model';
-import { SubscriptionPackage } from 'src/app/shared/models/subscription-package.model';
 import { TransactionDetail } from 'src/app/transactions/transaction-detail-list/transaction-detail.model';
-import { UserDetail } from 'src/app/user/user-details.model';
 
 export const loadCurrentBotSuccess = createAction(
   '[Bot Backtest API] Load Current Bot Success',
@@ -96,5 +90,23 @@ export const loadCurrentBotHistoryTradesSuccess = createAction(
 
 export const loadCurrentBotHistoryTradesFailure = createAction(
   '[Bot Backtest API] Load Current Bot History Trades Failure',
+  props<{ error: string }>()
+);
+
+export const startBacktestSuccess = createAction(
+  '[Bot Backtest API] Start Backtest Success',
+);
+
+export const stopBacktestSuccess = createAction(
+  '[Bot Backtest API] Stop Backtest Success',
+);
+
+export const startBacktestFailure = createAction(
+  '[Bot Backtest API] Start Backtest Failure',
+  props<{ error: string }>()
+);
+
+export const stopBacktestFailure = createAction(
+  '[Bot Backtest API] Stop Backtest Failure',
   props<{ error: string }>()
 );

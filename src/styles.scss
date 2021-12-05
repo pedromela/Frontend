@@ -216,11 +216,19 @@ mat-card {
     user-select: none;
     outline: none;
   }
+
+  .wrapper-column {
+    display: flex;
+    align-items: center;
+    flex-direction: column; 
+    justify-content: center;
+    width: 100%;
+    padding: 20px;
+  }
   
   .wrapper {
       display: flex;
       align-items: center;
-      flex-direction: column; 
       justify-content: center;
       width: 100%;
       padding: 20px;

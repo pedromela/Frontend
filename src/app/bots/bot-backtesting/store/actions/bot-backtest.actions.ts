@@ -1,4 +1,5 @@
 import { createAction, props } from '@ngrx/store';
+import { BacktestData } from 'src/app/shared/interfaces/chartmodel';
 
 export const clear = createAction(
   '[Bot Backtest] Clear',
@@ -29,6 +30,8 @@ export const loadCurrentBotPrices = createAction(
 
 export const loadCurrentBotProfit = createAction(
   '[Bot Backtest] Load Current Bot Profit',
+  props<{ data: BacktestData }>()
+
 );
 
 export const loadCurrentBotProfitData = createAction(
@@ -72,4 +75,22 @@ export const setCurrentBotTo = createAction(
 export const setCurrentBotReloadData = createAction(
   '[Bot Backtest] Set Current Bot ReloadData',
   props<{ reloadData: boolean }>()
+);
+
+export const startBacktest = createAction(
+  '[Bot Backtest] Start Backtest',
+  props<{
+    botId: string,
+    from: Date,
+    to: Date,
+   }>()
+);
+
+export const stopBacktest = createAction(
+  '[Bot Backtest] Stop Backtest',
+);
+
+export const nextBacktestData = createAction(
+  '[Bot Backtest] Next Backtest Data',
+  props<{ data: BacktestData }>()
 );

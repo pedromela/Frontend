@@ -33,6 +33,7 @@ import { SharedModule } from './shared/shared.module';
 import { AuthInterceptor } from './shared/guards/auth/auth.interceptor';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { PlotModule } from './plot/plot.module';
+import { BacktesterSignalRService } from './services/backtester-signal-r.service';
 
 @NgModule({
   declarations: [
@@ -71,6 +72,7 @@ import { PlotModule } from './plot/plot.module';
   ],
   providers: [
     UserService,
+    BacktesterSignalRService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,

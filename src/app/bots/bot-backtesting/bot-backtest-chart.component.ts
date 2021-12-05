@@ -17,6 +17,10 @@ import { ResizeObserver } from "resize-observer";
 import { IndicatorSeries } from "src/app/plot/tradingviewchart/indicatorseries.model";
 import { Candle } from "src/app/plot/candlechart/candle.model";
 import { BarDataUnit } from "src/app/plot/tradingviewchart/bardataunit.model";
+import { BacktestData } from "src/app/shared/interfaces/chartmodel";
+import { BacktesterSignalRService } from "src/app/services/backtester-signal-r.service";
+import { LineDataUnit } from "src/app/plot/tradingviewchart/linedataunit.model";
+import { Point } from "src/app/plot/tradingviewchart/point.model";
 
 @Component({
   selector: 'app-bot-backtest-chart',
@@ -26,8 +30,8 @@ import { BarDataUnit } from "src/app/plot/tradingviewchart/bardataunit.model";
 export class BotBacktestChartComponent implements AfterViewInit, OnInit, OnDestroy {
   @Input() botId: string;
   chart: IChartApi;
-  indicatorSeries :ISeriesApi<"Line">[];
-  series :ISeriesApi<"Candlestick">;
+  indicatorSeries: { [name: string]: ISeriesApi<"Line"> } = null;
+  series: ISeriesApi<"Candlestick">;
   seriesData: BarDataUnit[];
 
   loading$: Observable<boolean> = this.store.select(fromStore.BotBacktestSelectors.getCurrentBotLoading).pipe(delay(50));
@@ -37,6 +41,7 @@ export class BotBacktestChartComponent implements AfterViewInit, OnInit, OnDestr
   activeTransactions$ : Observable<TransactionDetail[]> = this.store.select(fromStore.BotBacktestSelectors.getCurrentBotActiveTrades);
   botParameters$: Observable<BotDetail> = this.store.select(fromStore.BotBacktestSelectors.getCurrentBot);
   reloadData$: Observable<boolean> = this.store.select(fromStore.BotBacktestSelectors.getCurrentBotReloadData);
+  data$: Observable<BacktestData> = this.backtesterSignalRService.dataSubject.asObservable();
 
   markers: any[];
   stop: boolean;
@@ -49,11 +54,11 @@ export class BotBacktestChartComponent implements AfterViewInit, OnInit, OnDestr
     public candleService: TradingViewChartService,
     public transactionService: TransactionDetailService,
     public botService: BotDetailService,
+    public backtesterSignalRService: BacktesterSignalRService,
     public store: Store<fromStore.BotBacktestState>,
   ) {
       this.seriesData = [];
       this.markers = [];
-      this.indicatorSeries = [];
   }
 
   ngOnInit() {
@@ -67,19 +72,42 @@ export class BotBacktestChartComponent implements AfterViewInit, OnInit, OnDestr
     if(this.botId == undefined) {
       return;
     }
+    let first = true;
 
-    this._subs.add(this.reloadData$
-    .pipe(
-      filter((reloadData) => {
-        return !!reloadData
-      }),
-      take(1)
-    )
-    .subscribe(() => {
-      this.CreateSeries();
-    }));
-    this.CreateChart();
-    //this.subscribeControlsChanges();
+    this._subs.add(this.data$
+      .subscribe((data) => {
+        console.log(data);
+        if (data) {
+          if(data.state === 2) {
+            this.LoadMarkers();
+            return;
+          }
+          if (data.state === 0) {
+            if (first) {
+              this.CreateChart();
+              first = false;
+            }
+            this.CreateSeries(data);
+          }
+          data.candles.forEach((candle) => {
+            this.series.update(new BarDataUnit(candle));
+          });
+          data.lines.values.forEach((value) => {
+            const lineNames = Object.keys(value);
+            lineNames.forEach((lineName) => {
+              const descriptor = Object.getOwnPropertyDescriptor(value, lineName);
+              const point: Point = {
+                value: descriptor.value.close,
+                timestamp: descriptor.value.timestamp
+              }
+              const indicatorSeries = this.indicatorSeries[lineName];
+              indicatorSeries.update(new LineDataUnit(point));
+            });
+          });
+        }
+      }, (error) => {
+        console.log(error);
+      }));
   }
 
   ngOnDestroy() {
@@ -243,82 +271,40 @@ export class BotBacktestChartComponent implements AfterViewInit, OnInit, OnDestr
     resize.observe(container);
   }
   
-  public async CreateSeries() {
-
-    this._subs.add(this.priceSeries$
-    .pipe(
-      filter((priceSeries) => {
-        return !!priceSeries && priceSeries.length > 0;
-      }),
-      take(1)
-    )
-    .subscribe((priceSeries) => {
-      this.seriesData = priceSeries.map(candle => new BarDataUnit(candle));
-      this.series.setData(this.seriesData);
-      this.LoadMarkers();
-    }));
-
-    this._subs.add(this.indicatorSeries$
-      .pipe(
-        filter((indicatorSeries) => {
-          return !!indicatorSeries && indicatorSeries.length > 0;
-        }),
-        take(1)
-      )
-      .subscribe((indicatorSeries) => {
-        let i = 0;
-        indicatorSeries.forEach((data) => {
-          const color = this.candleService.getRandomColor();
-          const series = this.chart.addLineSeries({
-            color: color
-          });
-          this.indicatorSeries.push(series);
-          series.setData(data.list);
-
-          var container = document.getElementById('backtest_chart');
-          var legend = document.createElement('div');
-          legend.className='indicator-legend';
-          container.appendChild(legend);
-          //legend.style.display = 'block';
-          //legend.style.left = (i++)*3 + 'px';
-          legend.style.top = (i++)*15 + 'px';
-          const lastValue = data.list[data.list.length -1];
-          this.setLegendText(data.name, lastValue.value, legend, color);
-          
-          this.chart.subscribeCrosshairMove((param) => {
-            this.setLegendText(data.name, param.seriesPrices.get(series), legend, color);
-          });
-    
-        });
-      }));
-
-    // this._subs.add(interval(this.botParameters.timeFrame * 60000)
-    // .pipe(takeWhile(() => !this.stop))
-    // .subscribe(() => {
-    //   this.addLastCandle();
-    // }));
-    this.UpdateSeries();
-  }
-
-  public UpdateSeries() {
-    this._subs.add(this.priceSeries$
-    .pipe(
-      withLatestFrom(
-        this.indicatorSeries$,
-        this.reloadData$
-        ),
-      filter(([priceSeries, indicatorSeries, reloadData]) => {
-        return !!reloadData && !!priceSeries && priceSeries.length > 0 && !!indicatorSeries && indicatorSeries.length > 0;
-      }),
-    )
-    .subscribe(([priceSeries, indicatorSeries, reloadData]) => {
-      this.seriesData = priceSeries.map(candle => new BarDataUnit(candle));
-      this.series.setData(this.seriesData);
-      indicatorSeries.forEach((data, i) => {
-        this.indicatorSeries[i].setData(data.list);    
+  public async CreateSeries(data: BacktestData) {
+    this.series.setData([]);
+    if(this.indicatorSeries != null) {
+      const keys = Object.keys(this.indicatorSeries);
+      keys.forEach((key) => {
+        const descriptor = Object.getOwnPropertyDescriptor(this.indicatorSeries, key);
+        descriptor.value.setData([]);
       });
-      this.store.dispatch(fromStore.BotBacktestActions.setCurrentBotReloadData({ reloadData: false }));
-    }));
+    }
+    this.indicatorSeries = {};
+    let i = 0;
+    data.lineNames?.forEach((line) => {
+      const color = this.candleService.getRandomColor();
+      this.indicatorSeries[line] = this.chart.addLineSeries({
+        color: color
+      }); 
+      this.indicatorSeries[line].setData([]);
+
+      var container = document.getElementById('backtest_chart');
+      var legend = document.createElement('div');
+      legend.className='indicator-legend';
+      container.appendChild(legend);
+      legend.style.top = (i++)*15 + 'px';
+
+      this.setLegendText(line, 0, legend, color);
+      
+      this.chart.subscribeCrosshairMove((param) => {
+        if (this.indicatorSeries != null) {
+          this.setLegendText(line, param.seriesPrices.get(this.indicatorSeries[line]), legend, color);
+        }
+      });
+      this.markers = [];
+      this.series.setMarkers(this.markers);
+    });
   }
 
   public setLegendText(name, priceValue, legend: HTMLElement, color: string) {
@@ -352,28 +338,4 @@ export class BotBacktestChartComponent implements AfterViewInit, OnInit, OnDestr
       this.AddMarkers(this.series, transactions);
     }));
   }
-
-  // private subscribeControlsChanges() {
-  //   Object.keys(this.formGroup.controls).forEach(key => {
-  //     const control = this.formGroup.controls[key];
-  //     this._subs.add(
-  //       control.valueChanges
-  //         .pipe(
-  //           debounceTime(300),
-  //           distinctUntilChanged()
-  //         )
-  //         .subscribe((val) => {
-  //           switch(key) {
-  //             case 'startDate':
-  //               this.store.dispatch(fromStore.BotBacktestActions.setCurrentBotFrom({ from: this.startDateCtrl.value }));
-  //               break;
-  //             case 'endDate':
-  //               this.store.dispatch(fromStore.BotBacktestActions.setCurrentBotTo({ to: this.endDateCtrl.value }));
-  //               break;
-  //           }
-  //         })
-  //     );
-  //   })
-  // }
-  
 }

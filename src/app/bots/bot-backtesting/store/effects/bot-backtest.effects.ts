@@ -1,8 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
-import { ToastrService } from "ngx-toastr";
-import { forkJoin, of } from "rxjs";
+import { forkJoin, from, of } from "rxjs";
 import { catchError, concatMap, filter, map, mergeMap, withLatestFrom } from "rxjs/operators";
 import { BotDetailService } from "src/app/services/bot-detail.service";
 import { StrategyDataService } from "src/app/services/strategy-data.service";
@@ -13,6 +12,11 @@ import { BotBacktestState } from "../reducers/bot-backtest.reducer";
 import * as fromStore from 'src/app/bots/bot-backtesting/store';
 import { TradingViewChartService } from "src/app/services/tradingviewchart.service";
 import { LineDataUnit } from "src/app/plot/tradingviewchart/linedataunit.model";
+import { BacktesterSignalRService } from "src/app/services/backtester-signal-r.service";
+import { HttpClient, HttpParams } from "@angular/common/http";
+import { URLS } from "src/app/services/urls.base";
+import * as signalR from "@aspnet/signalr";
+import { ToastrService } from "ngx-toastr";
 
 @Injectable()
 export class BotBacktestEffects {
@@ -43,10 +47,22 @@ export class BotBacktestEffects {
         return this.actions$
             .pipe(
                 ofType(BotBacktestActions.loadCurrentBotProfit),
-                concatMap((action) => of(action).pipe(withLatestFrom(this.store.select(fromStore.BotBacktestSelectors.getCurrentBotId)))),
-                mergeMap(([, botId]) => this.botService.getBotProfit(botId).pipe(
-                    map((botProfitSettings) => {
-                        return BotBacktestAPIActions.loadCurrentBotProfitSuccess({ botProfitSettings });
+                mergeMap((action) => of(action).pipe(
+                    map(() => {
+                        const score = action.data;
+                        const descriptionDict = {
+                            positions: 'Positions',
+                            successes: 'Succeses',
+                            amountGained: 'Amount gained',
+                            activeTransactions: 'Active transactions',
+                            maxDrawBack: 'Max Draw Back',
+                            currentProfit : 'Current profit',
+                        };
+                        const data = Object.keys(score).filter((key) => descriptionDict[key] != null).map((key) => {
+                            const p = Object.getOwnPropertyDescriptor(score, key);
+                            return [descriptionDict[key], p.value];
+                        });
+                        return BotBacktestAPIActions.loadCurrentBotProfitSuccess({ botProfitSettings: data });
                     }),
                     catchError((error) => of(BotBacktestAPIActions.loadCurrentBotProfitFailure({ error })))
                 ))
@@ -115,7 +131,9 @@ export class BotBacktestEffects {
                 ofType(BotBacktestActions.loadCurrentBotSettings),
                 concatMap((action) => of(action).pipe(withLatestFrom(this.store.select(fromStore.BotBacktestSelectors.getCurrentBotId)))),
                 mergeMap(([, botId]) => this.botService.getBotSettings(botId).pipe(
-                    map((botSettings) => BotBacktestAPIActions.loadCurrentBotSettingsSuccess({ botSettings })),
+                    map((botSettings) => {
+                        return BotBacktestAPIActions.loadCurrentBotSettingsSuccess({ botSettings });
+                    }),
                     catchError((error) => of(BotBacktestAPIActions.loadCurrentBotSettingsFailure({ error })))
                 ))
             );
@@ -175,15 +193,45 @@ export class BotBacktestEffects {
             );
     });
 
+    startBacktest$ = createEffect(() => {
+        return this.actions$
+            .pipe(
+                ofType(BotBacktestActions.startBacktest),
+                mergeMap((action) => of(this.backtesterSignalRService.startConnection(action.botId, action.from, action.to)).pipe(
+                    map((connection) => {
+                        return BotBacktestAPIActions.startBacktestSuccess()
+                    }),
+                    catchError((error) => {
+                        return of(BotBacktestAPIActions.startBacktestFailure({ error }));
+                    })
+                ))
+            );
+    });
+
+    stopBacktest$ = createEffect(() => {
+        return this.actions$
+            .pipe(
+                ofType(BotBacktestActions.stopBacktest),
+                mergeMap((action) => of(this.backtesterSignalRService.closeConnection()).pipe(
+                    map(() => {
+                        return BotBacktestAPIActions.stopBacktestSuccess()
+                    }),
+                    catchError((error) => of(BotBacktestAPIActions.stopBacktestFailure({ error })))
+                ))
+            );
+    });
+
     constructor(
+        private http: HttpClient,
+        private toastr: ToastrService,
         private actions$: Actions,
         public store: Store<BotBacktestState>,
-        private toastr: ToastrService,
         public userService: UserService,
         public botService: BotDetailService,
         public strategyService: StrategyDataService,
         public transactionService: TransactionDetailService,
         public candleService: TradingViewChartService,
+        public backtesterSignalRService: BacktesterSignalRService,
     ) {
 
     }

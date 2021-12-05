@@ -32,7 +32,6 @@ export class TradingViewChartComponent implements AfterViewInit, OnInit, OnDestr
   indicatorSeries :ISeriesApi<"Line">[];
   series :ISeriesApi<"Candlestick">;
   seriesData: BarDataUnit[];
-  
   loading$: Observable<boolean> = this.store.select(fromStore.BotSelectors.getCurrentBotChartLoading).pipe(delay(50));
   priceSeries$: Observable<Candle[]> = this.store.select(fromStore.BotSelectors.getCurrentBotPriceSeries);
   indicatorSeries$: Observable<IndicatorSeries[]> = this.store.select(fromStore.BotSelectors.getCurrentBotIndicatorSeries);

@@ -10,13 +10,17 @@ import { BotBacktestRoutingModule } from './bot-backtest-routing.module';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { PlotModule } from 'src/app/plot/plot.module';
 import { BotBacktestChartComponent } from './bot-backtest-chart.component';
-import { BotDetailModule } from '../bot-detail-list/bot-detail.module';
+import { BotBacktestSettingsComponent } from './bot-backtest-settings.component';
+import { BotBacktestProfitComponent } from './bot-backtest-profit.component';
+import { BacktesterSignalRService } from 'src/app/services/backtester-signal-r.service';
 
 
 @NgModule({
   declarations: [
     BotBacktestComponent,
-    BotBacktestChartComponent
+    BotBacktestChartComponent,
+    BotBacktestProfitComponent,
+    BotBacktestSettingsComponent
   ],
   imports: [
     CommonModule,
@@ -29,9 +33,10 @@ import { BotDetailModule } from '../bot-detail-list/bot-detail.module';
     MaterialModule,
     SharedModule,
     PlotModule,
-    BotDetailModule,
     NgApexchartsModule
   ],
-  providers: []
+  providers: [
+    BacktesterSignalRService
+  ]
 })
 export class BotBacktestModule { }
