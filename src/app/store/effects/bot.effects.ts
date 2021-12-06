@@ -275,21 +275,23 @@ export class BotEffects {
                     this.store.select(fromStore.BotSelectors.getCurrentBotFrom),
                     this.store.select(fromStore.BotSelectors.getCurrentBotTo),
                 ))),
-                mergeMap(([, botId, from, to]) => this.transactionService.getActiveTransactionsFromTo(botId, from, to).pipe(
-                    map((activeTrades) => {
-                        activeTrades.sort((a, b) => {
-                            if(a.timestamp < b.timestamp) {
-                                return 1;
-                            }
-                            else if(a.timestamp > b.timestamp) {
-                                return -1;
-                            }
-                            return 0;
-                        });
-                        return BotAPIActions.loadCurrentBotActiveTradesSuccess({ activeTrades });
-                    }),
-                    catchError((error) => of(BotAPIActions.loadCurrentBotActiveTradesFailure({ error })))
-                ))
+                mergeMap(([, botId, from, to]) => {
+                    return this.transactionService.getActiveTransactionsFromTo(botId, from, to).pipe(
+                        map((activeTrades) => {
+                            activeTrades.sort((a, b) => {
+                                if(a.timestamp < b.timestamp) {
+                                    return 1;
+                                }
+                                else if(a.timestamp > b.timestamp) {
+                                    return -1;
+                                }
+                                return 0;
+                            });
+                            return BotAPIActions.loadCurrentBotActiveTradesSuccess({ activeTrades });
+                        }),
+                        catchError((error) => of(BotAPIActions.loadCurrentBotActiveTradesFailure({ error })))
+                    );
+                })
             );
     });
 
@@ -302,21 +304,23 @@ export class BotEffects {
                     this.store.select(fromStore.BotSelectors.getCurrentBotFrom),
                     this.store.select(fromStore.BotSelectors.getCurrentBotTo),
                 ))),
-                mergeMap(([, botId, from, to]) => this.transactionService.getTradeHistoryTransactionsFromTo(botId, from, to).pipe(
-                    map((historyTrades) => {
-                        historyTrades.sort((a, b) => {
-                            if(a.timestamp < b.timestamp) {
-                                return 1;
-                            }
-                            else if(a.timestamp > b.timestamp) {
-                                return -1;
-                            }
-                            return 0;
-                        });
-                        return BotAPIActions.loadCurrentBotHistoryTradesSuccess({ historyTrades, from, to })
-                    }),
-                    catchError((error) => of(BotAPIActions.loadCurrentBotHistoryTradesFailure({ error })))
-                ))
+                mergeMap(([, botId, from, to]) => {
+                    return this.transactionService.getTradeHistoryTransactionsFromTo(botId, from, to).pipe(
+                        map((historyTrades) => {
+                            historyTrades.sort((a, b) => {
+                                if(a.timestamp < b.timestamp) {
+                                    return 1;
+                                }
+                                else if(a.timestamp > b.timestamp) {
+                                    return -1;
+                                }
+                                return 0;
+                            });
+                            return BotAPIActions.loadCurrentBotHistoryTradesSuccess({ historyTrades, from, to })
+                        }),
+                        catchError((error) => of(BotAPIActions.loadCurrentBotHistoryTradesFailure({ error })))
+                    );
+                })
             );
     });
 

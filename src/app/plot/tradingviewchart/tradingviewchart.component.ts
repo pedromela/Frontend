@@ -88,19 +88,20 @@ export class TradingViewChartComponent implements AfterViewInit, OnInit, OnDestr
     if(this.botId == undefined) {
       return;
     }
-
+    this.CreateChart();
     this._subs.add(combineLatest([
       this.botParameters$,
-      this.store.select(fromStore.BotSelectors.getCurrentBotFrom),
-      this.store.select(fromStore.BotSelectors.getCurrentBotTo),
+      this.store.select(fromStore.BotSelectors.getCurrentBotActiveTradesCount),
+      this.store.select(fromStore.BotSelectors.getCurrentBotHistoryTradesCount)
     ])
     .pipe(
-      filter(([botParameters, from, to]) => {
-        return !!botParameters && !!from && !!to
+      distinctUntilChanged(),
+      filter(([botParameters, activeTradesCount, historyTradesCount]) => {
+        return !!botParameters && activeTradesCount != null && historyTradesCount != null;
       }),
       take(1)
     )
-    .subscribe(() => {
+    .subscribe(([activeTradesCount, historyTradesCount]) => {
       this.store.dispatch(fromStore.BotActions.loadCurrentBotPrices({ 
         from: this.startDateCtrl.value,
         to: this.endDateCtrl.value,
@@ -108,8 +109,6 @@ export class TradingViewChartComponent implements AfterViewInit, OnInit, OnDestr
       }));
       this.CreateSeries();
     }));
-    this.CreateChart();
-    //this.subscribeControlsChanges();
   }
 
   ngOnDestroy() {
@@ -318,6 +317,7 @@ export class TradingViewChartComponent implements AfterViewInit, OnInit, OnDestr
       take(1)
     )
     .subscribe((priceSeries) => {
+      console.log(priceSeries);
       this.seriesData = priceSeries.map(candle => new BarDataUnit(candle));
       this.series.setData(this.seriesData);
       this.LoadMarkers();
@@ -333,6 +333,8 @@ export class TradingViewChartComponent implements AfterViewInit, OnInit, OnDestr
       .subscribe((indicatorSeries) => {
         let i = 0;
         indicatorSeries.forEach((data) => {
+          console.log(data);
+
           const color = this.candleService.getRandomColor();
           const series = this.chart.addLineSeries({
             color: color
@@ -370,11 +372,11 @@ export class TradingViewChartComponent implements AfterViewInit, OnInit, OnDestr
       withLatestFrom(
         this.indicatorSeries$,
         this.reloadData$
-        ),
+      ),
+      take(1),
       filter(([priceSeries, indicatorSeries, reloadData]) => {
         return !!reloadData && !!priceSeries && priceSeries.length > 0 && !!indicatorSeries && indicatorSeries.length > 0;
       }),
-      take(1)
     )
     .subscribe(([priceSeries, indicatorSeries, reloadData]) => {
       this.seriesData = priceSeries.map(candle => new BarDataUnit(candle));

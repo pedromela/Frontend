@@ -54,7 +54,7 @@ export class BotBacktestEffects {
                             positions: 'Positions',
                             successes: 'Succeses',
                             amountGained: 'Amount gained',
-                            activeTransactions: 'Active transactions',
+                            activeTransactionsCount: 'Active transactions',
                             maxDrawBack: 'Max Draw Back',
                             currentProfit : 'Current profit',
                         };

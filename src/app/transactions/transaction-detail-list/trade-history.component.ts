@@ -36,6 +36,8 @@ export class TradeHistoryComponent implements OnInit, AfterViewInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    this.dataSource = new MatTableDataSource<TransactionDetail>();
+
     this._subs.add(combineLatest([
       this.store.select(fromStore.BotSelectors.getCurrentBot),
       this.store.select(fromStore.BotSelectors.getCurrentBotFrom),
@@ -61,7 +63,7 @@ export class TradeHistoryComponent implements OnInit, AfterViewInit, OnDestroy {
       filter((transactions) => !!transactions && transactions.length > 0)
     )
     .subscribe((transactions) => {
-      this.dataSource = new MatTableDataSource<TransactionDetail>(transactions);
+      this.dataSource.data = transactions;
       this.dataSource.paginator = this.paginator;
       if(transactions.length > 0) {
         this.symbol1 = transactions[0].market.substr(0,3);
