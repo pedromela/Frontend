@@ -39,11 +39,11 @@ const routes: Routes = [
   },
   {
     path:'botwizard',
-    loadChildren: () => import('./bots//wizard/bot-wizard.module').then(m => m.BotWizardModule),
+    loadChildren: () => import('./bots/wizard/bot-wizard.module').then(m => m.BotWizardModule),
   },
   {
     path:'strategywizard',
-    loadChildren: () => import('./bots//wizard/bot-wizard.module').then(m => m.BotWizardModule),
+    loadChildren: () => import('./bots/strategy/strategy.module').then(m => m.StrategyModule),
   },
   {
     path:'ranking',

@@ -63,6 +63,9 @@ body {
 
 table {
   width: 100%;
+  padding: 0.4rem;
+  vertical-align: inherit;
+  border-top: 1px solid #dee2e6;
 }
 
 mat-drawer-container {

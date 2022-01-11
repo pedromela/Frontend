@@ -4,6 +4,8 @@ import { RouterModule } from '@angular/router';
 import { MaterialModule } from 'src/app/material-module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { BotWizardRoutingModule } from './bot-wizard-routing.module';
+
 import { BotEditComponent } from './bot-edit.component';
 import { BotWizardComponent } from './bot-wizard.component';
 import { BotIsVirtualComponent } from './bot-isvirtual.component';
@@ -21,6 +23,7 @@ import { BotIsVirtualComponent } from './bot-isvirtual.component';
       ],
       imports: [
         CommonModule,
+        BotWizardRoutingModule,
         RouterModule,
         MaterialModule,
         ReactiveFormsModule,
