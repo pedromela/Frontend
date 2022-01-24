@@ -6,6 +6,7 @@ import { BotRanking } from 'src/app/bots/bot-ranking/bot-ranking.model';
 import { StrategyData } from 'src/app/bots/strategy/strategy-data.model';
 import { BrokerDetail } from 'src/app/broker/broker-detail.model';
 import { Candle } from 'src/app/plot/candlechart/candle.model';
+import { IndicatorCompleteDescription } from 'src/app/plot/tradingviewchart/indicator-complete-description.model';
 import { IndicatorSeries } from 'src/app/plot/tradingviewchart/indicatorseries.model';
 import { SubscriptionPackage } from 'src/app/shared/models/subscription-package.model';
 import { TransactionDetail } from 'src/app/transactions/transaction-detail-list/transaction-detail.model';
@@ -202,6 +203,16 @@ export const loadCurrentBotHistoryTradesSuccess = createAction(
 export const loadCurrentBotHistoryTradesFailure = createAction(
   '[Bot API] Load Current Bot History Trades Failure',
   props<{ error: string }>()
+);
+
+export const loadIndicatorDescriptionsSuccess = createAction(
+  '[Bot API] Load Current Bot Indicator Descriptions Success',
+  props<{ indicatorCompleteDescriptions: IndicatorCompleteDescription[] }>()
+);
+
+export const loadIndicatorDescriptionsFailure = createAction(
+    '[Bot API] Load Current Bot Indicator Descriptions Failure',
+    props<{ error: string }>()
 );
 
 export const loadUserBotsSuccess = createAction(

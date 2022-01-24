@@ -20,6 +20,7 @@ import { Store } from "@ngrx/store";
 import * as fromStore from 'src/app/store';
 import { IndicatorSeries } from "./indicatorseries.model";
 import { ResizeObserver } from "resize-observer";
+import { IndicatorCompleteDescription } from "./indicator-complete-description.model";
 
 @Component({
   selector: "app-tradingviewchart",
@@ -35,11 +36,13 @@ export class TradingViewChartComponent implements AfterViewInit, OnInit, OnDestr
   loading$: Observable<boolean> = this.store.select(fromStore.BotSelectors.getCurrentBotChartLoading).pipe(delay(50));
   priceSeries$: Observable<Candle[]> = this.store.select(fromStore.BotSelectors.getCurrentBotPriceSeries);
   indicatorSeries$: Observable<IndicatorSeries[]> = this.store.select(fromStore.BotSelectors.getCurrentBotIndicatorSeries);
+  indicatorCompleteDescriptions$: Observable<IndicatorCompleteDescription[]> = this.store.select(fromStore.BotSelectors.getIndicatorCompleteDescriptions);
   historyTransactions$ : Observable<TransactionDetail[]> = this.store.select(fromStore.BotSelectors.getCurrentBotHistoryTrades);
   activeTransactions$ : Observable<TransactionDetail[]> = this.store.select(fromStore.BotSelectors.getCurrentBotActiveTrades);
   botParameters$: Observable<BotDetail> = this.store.select(fromStore.BotSelectors.getCurrentBot);
   reloadData$: Observable<boolean> = this.store.select(fromStore.BotSelectors.getCurrentBotReloadData);
 
+  specialIndicatorSeries: Map<string, { chartContainer: HTMLDivElement, chart: IChartApi }>;
   markers: any[];
   stop: boolean;
   data: Params;
@@ -72,6 +75,7 @@ export class TradingViewChartComponent implements AfterViewInit, OnInit, OnDestr
       this.seriesData = [];
       this.markers = [];
       this.indicatorSeries = [];
+      this.specialIndicatorSeries = new Map<string, { chartContainer: HTMLDivElement, chart: IChartApi }>();
   }
 
   ngOnInit() {
@@ -82,6 +86,7 @@ export class TradingViewChartComponent implements AfterViewInit, OnInit, OnDestr
   }
 
   ngAfterViewInit() {
+    this.store.dispatch(fromStore.BotActions.loadIndicatorDescriptions());
     this.store.dispatch(fromStore.BotActions.setCurrentBotFrom({ from: this.startDateCtrl.value }));
     this.store.dispatch(fromStore.BotActions.setCurrentBotTo({ to: this.endDateCtrl.value }));
 
@@ -259,10 +264,10 @@ export class TradingViewChartComponent implements AfterViewInit, OnInit, OnDestr
     this.markers.push({ time: timestamp, position: 'aboveBar', color: '#009696', shape: 'arrowDown', text: 'BuyClose @ ' + transaction.amount });
   }
 
-  private resize() {
-    var container = document.getElementById('chart');
+  private resize(id: string, chart: IChartApi) {
+    var container = document.getElementById(id);
     if (!!container)
-      this.chart.applyOptions({ width: container.offsetWidth});
+      chart.applyOptions({ width: container.offsetWidth});
   }
 
   private CreateChart() {
@@ -302,9 +307,47 @@ export class TradingViewChartComponent implements AfterViewInit, OnInit, OnDestr
     });
 
     const resize = new ResizeObserver((entries) => {
-      this.resize()
+      this.resize('chart', this.chart)
     });
     resize.observe(container);
+  }
+
+  private CreateSpecialChart(id: string): { chartContainer: HTMLDivElement, chart: IChartApi } {
+    var container = document.getElementById('special_charts');
+
+    var chartContainer = document.createElement('div');
+    container.appendChild(chartContainer);
+
+    const chart = createChart(chartContainer, {
+        height: document.body.offsetHeight/4,
+        width: container.offsetWidth,
+        timeScale: {
+          timeVisible: true,
+          secondsVisible: true,
+          borderColor: '#D1D4DC',
+        },
+        rightPriceScale: {
+            borderColor: '#D1D4DC',
+        },
+         layout: {
+          backgroundColor: '#ffffff',
+          textColor: '#000',
+        },
+        grid: {
+          horzLines: {
+            color: '#F0F3FA',
+          },
+          vertLines: {
+            color: '#F0F3FA',
+          },
+        },
+    });
+
+    const resize = new ResizeObserver((entries) => {
+      this.resize(id, chart)
+    });
+    resize.observe(container);
+    return { chartContainer, chart };
   }
   
   public async CreateSeries() {
@@ -325,37 +368,31 @@ export class TradingViewChartComponent implements AfterViewInit, OnInit, OnDestr
 
     this._subs.add(this.indicatorSeries$
       .pipe(
-        filter((indicatorSeries) => {
-          return !!indicatorSeries && indicatorSeries.length > 0;
+        withLatestFrom(this.indicatorCompleteDescriptions$),
+        filter(([indicatorSeriesArray, indicatorCompleteDescriptions]) => {
+          return !!indicatorSeriesArray && indicatorSeriesArray.length > 0 &&
+                 !!indicatorCompleteDescriptions && indicatorCompleteDescriptions.length > 0;
         }),
         take(1)
       )
-      .subscribe((indicatorSeries) => {
-        let i = 0;
-        indicatorSeries.forEach((data) => {
-          console.log(data);
-
-          const color = this.candleService.getRandomColor();
-          const series = this.chart.addLineSeries({
-            color: color
-          });
-          this.indicatorSeries.push(series);
-          series.setData(data.list);
-
-          var container = document.getElementById('chart');
-          var legend = document.createElement('div');
-          legend.className='indicator-legend';
-          container.appendChild(legend);
-          //legend.style.display = 'block';
-          //legend.style.left = (i++)*3 + 'px';
-          legend.style.top = (i++)*15 + 'px';
-          const lastValue = data.list[data.list.length -1];
-          this.setLegendText(data.name, lastValue.value, legend, color);
-          
-          this.chart.subscribeCrosshairMove((param) => {
-            this.setLegendText(data.name, param.seriesPrices.get(series), legend, color);
-          });
-    
+      .subscribe(([indicatorSeriesArray, indicatorCompleteDescriptions]) => {
+        let counter = 0;
+        let specialCounter = 0;
+        indicatorSeriesArray.forEach((indicatorLineSeries) => {
+          const indicatorDescription = indicatorCompleteDescriptions.find(desc => indicatorLineSeries.name.includes(desc.shortName) && desc.special);
+          if (!!indicatorDescription) {
+            if (this.specialIndicatorSeries.has(indicatorDescription.shortName)) {
+              const { chartContainer, chart } = this.specialIndicatorSeries.get(indicatorDescription.shortName);
+              this.AddSpecialLineToChart(indicatorLineSeries, specialCounter, chartContainer, chart);
+            } else {
+              const chartOpts = this.AddSpecialLineToNewChart(indicatorLineSeries, specialCounter);
+              this.specialIndicatorSeries.set(indicatorDescription.shortName, chartOpts);
+            }
+            specialCounter++;
+          } else {
+            this.AddLineToChart(indicatorLineSeries, counter);
+            counter++;
+          }
         });
       }));
 
@@ -395,6 +432,42 @@ export class TradingViewChartComponent implements AfterViewInit, OnInit, OnDestr
       val = priceValue;//(Math.round(priceValue * 100) / 100).toFixed(5);
     }
     legend.innerHTML = name + '<span style="color:' + color + '"> ' + val + '</span>'
+  }
+
+  private AddLineToChart(indicatorSeries: IndicatorSeries, counter: number) {
+    var container = document.getElementById('chart');
+    this.AddLine(indicatorSeries, counter, container, this.chart);
+  }
+
+  private AddSpecialLineToNewChart(indicatorSeries: IndicatorSeries, counter: number) {
+    var { chart, chartContainer } = this.CreateSpecialChart('chart' + counter);
+    this.AddLine(indicatorSeries, counter, chartContainer, chart);
+    return { chart, chartContainer };
+  }
+
+  private AddSpecialLineToChart(indicatorSeries: IndicatorSeries, counter: number, chartContainer: HTMLElement, chart: IChartApi) {
+    this.AddLine(indicatorSeries, counter, chartContainer, chart);
+    return { chart, chartContainer };
+  }
+
+  private AddLine(indicatorSeries: IndicatorSeries, counter: number, chartContainer: HTMLElement, chart: IChartApi) {
+    const color = this.candleService.getRandomColor();
+    const series = chart.addLineSeries({
+      color: color
+    });
+    this.indicatorSeries.push(series);
+    series.setData(indicatorSeries.list);
+
+    var legend = document.createElement('div');
+    legend.className='indicator-legend';
+    chartContainer.appendChild(legend);
+    legend.style.top = counter*15 + 'px';
+    const lastValue = indicatorSeries.list[indicatorSeries.list.length -1];
+    this.setLegendText(indicatorSeries.name, lastValue.value, legend, color);
+    
+    chart.subscribeCrosshairMove((param) => {
+      this.setLegendText(indicatorSeries.name, param.seriesPrices.get(series), legend, color);
+    });
   }
 
   public async LoadMarkers() {

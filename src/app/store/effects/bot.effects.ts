@@ -241,7 +241,16 @@ export class BotEffects {
                             }[] = [];
                             
                             indicatorSeriesDataApi?.forEach((pair) => {
-                              const list = { list: pair.value.map(point => new LineDataUnit(point)), name: pair.key };
+                              let list = { list: pair.value.map(point => new LineDataUnit(point)), name: pair.key };
+                              list.list.sort((a, b) => {
+                                if(a.time < b.time) {
+                                    return 1;
+                                }
+                                else if(a.time > b.time) {
+                                    return -1;
+                                }
+                                return 0;
+                            });
                               indicatorSeriesData.push(list);
                             });
                             return BotAPIActions.loadCurrentBotPricesSuccess({ timeSeriesData, indicatorSeriesData, reloadData: action.reloadData });
@@ -319,6 +328,21 @@ export class BotEffects {
                             return BotAPIActions.loadCurrentBotHistoryTradesSuccess({ historyTrades, from, to })
                         }),
                         catchError((error) => of(BotAPIActions.loadCurrentBotHistoryTradesFailure({ error })))
+                    );
+                })
+            );
+    });
+
+    loadCurrentBotIndicatorDescriptions$ = createEffect(() => {
+        return this.actions$
+            .pipe(
+                ofType(BotActions.loadIndicatorDescriptions),
+                mergeMap(() => {
+                    return this.candleService.getAllIndicatorDescriptions().pipe(
+                        map((indicatorCompleteDescriptions) => {
+                            return BotAPIActions.loadIndicatorDescriptionsSuccess({ indicatorCompleteDescriptions })
+                        }),
+                        catchError((error) => of(BotAPIActions.loadIndicatorDescriptionsFailure({ error })))
                     );
                 })
             );

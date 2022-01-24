@@ -7,6 +7,7 @@ import { Observable, of } from 'rxjs';
 import { Point } from '../plot/tradingviewchart/point.model';
 import { genericRetryStrategy } from './genericRetryStrategy';
 import { catchError, retryWhen } from 'rxjs/operators';
+import { IndicatorCompleteDescription } from '../plot/tradingviewchart/indicator-complete-description.model';
 
 @Injectable({
   providedIn: 'root'
@@ -93,6 +94,15 @@ export class TradingViewChartService {
                             catchError(error => of(error))
                           );
 
+  }
+
+  getAllIndicatorDescriptions(): Observable<IndicatorCompleteDescription[]> {
+    const url = this.rootURL + '/Indicators/list';
+    return this.http.get<IndicatorCompleteDescription[]>(url)
+    .pipe(
+      retryWhen(genericRetryStrategy()),
+      catchError(error => of(error))
+    );
   }
 
   getIndicatorPointsFromTo(botId, timeFrame, from: Date, to: Date): Observable<{ key: string, value: Point[] }[]> {

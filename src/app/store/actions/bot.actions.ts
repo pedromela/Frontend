@@ -108,6 +108,10 @@ export const loadCurrentBotHistoryTrades = createAction(
    }>()
 );
 
+export const loadIndicatorDescriptions = createAction(
+  '[Bot] Load Current Bot Indicator Descriptions'
+);
+
 export const loadUserDetails = createAction(
   '[Bot] Load User Detail'
 );

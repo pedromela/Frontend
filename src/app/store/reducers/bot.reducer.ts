@@ -6,6 +6,7 @@ import { BotRanking } from 'src/app/bots/bot-ranking/bot-ranking.model';
 import { StrategyData } from 'src/app/bots/strategy/strategy-data.model';
 import { BrokerDetail } from 'src/app/broker/broker-detail.model';
 import { Candle } from 'src/app/plot/candlechart/candle.model';
+import { IndicatorCompleteDescription } from 'src/app/plot/tradingviewchart/indicator-complete-description.model';
 import { IndicatorSeries } from 'src/app/plot/tradingviewchart/indicatorseries.model';
 import { SubscriptionPackage } from 'src/app/shared/models/subscription-package.model';
 import { TransactionDetail } from 'src/app/transactions/transaction-detail-list/transaction-detail.model';
@@ -46,6 +47,7 @@ export interface BotState {
     reloadHistoryTrades: boolean;
     priceSeriesData: Candle[];
     indicatorSeriesData: IndicatorSeries[];
+    indicatorCompleteDescriptions: IndicatorCompleteDescription[];
     allMarkets: string[];
     brokerMarkets: string[];
     brokers: BrokerDetail[];
@@ -86,6 +88,7 @@ export const initialState: BotState = {
     historyTradesCount: null,
     priceSeriesData: [],
     indicatorSeriesData: null,
+    indicatorCompleteDescriptions: null,
     allMarkets: [],
     brokerMarkets: [],
     brokers: [],
@@ -244,6 +247,25 @@ export const BotReducer = createReducer(
       error: ''
     };
   }),
+  on(BotActions.loadIndicatorDescriptions, (state): BotState => {
+    return {
+      ...state,
+      error: ''
+    };
+  }), 
+  on(BotAPIActions.loadIndicatorDescriptionsSuccess, (state, action): BotState => {
+    return {
+      ...state,
+      indicatorCompleteDescriptions: action.indicatorCompleteDescriptions,
+      error: ''
+    };
+  }),
+  on(BotAPIActions.loadIndicatorDescriptionsFailure, (state, action) => {
+    return {
+      ...state,
+      error: action.error
+    };
+  }),
   on(BotActions.clear, (state, action): BotState => {
     return {
       ...state,
@@ -277,6 +299,7 @@ export const BotReducer = createReducer(
       historyTradesCount: null,
       priceSeriesData: [],
       indicatorSeriesData: null,
+      indicatorCompleteDescriptions: null,
       allMarkets: [],
       brokerMarkets: [],
       brokers: [],

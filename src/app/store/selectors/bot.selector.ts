@@ -163,6 +163,11 @@ export const getCurrentBotTradeHistoryLoading = createSelector(
     state => state.currentBotTradeHistoryLoading
 );
 
+export const getIndicatorCompleteDescriptions = createSelector(
+    getFeatureState,
+    state => state.indicatorCompleteDescriptions
+);
+
 export const getUserBots = createSelector(
     getFeatureState,
     state => state.userBotList
