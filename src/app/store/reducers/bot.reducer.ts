@@ -35,10 +35,13 @@ export interface BotState {
     botProfitData: BotProfit[];
     botSettings: string[][];
     userBotList: BotDetail[];
+    userBotListLoading: boolean;
     userVirtualBotList: BotDetail[];
+    userVirtualBotListLoading: boolean;
     botRanking: BotRanking[];
-    loadingRanking: boolean;
+    rankingLoading: boolean;
     strategies: StrategyData[];
+    strategiesLoading: boolean;
     activeTrades: TransactionDetail[];
     historyTrades: TransactionDetail[];
     activeTradesCount: number;
@@ -78,10 +81,13 @@ export const initialState: BotState = {
     botProfitData: [],
     botSettings: [],
     userBotList: [],
+    userBotListLoading: false,
     userVirtualBotList: [],
+    userVirtualBotListLoading: false,
     botRanking: [],
-    loadingRanking: false,
+    rankingLoading: false,
     strategies: [],
+    strategiesLoading: false,
     activeTrades: [],
     historyTrades: [],
     activeTradesCount: null,
@@ -102,9 +108,7 @@ export const initialState: BotState = {
 
 export const BotReducer = createReducer(
   initialState,
-  on(BotActions.loadUserBots,
-    BotActions.login,
-    BotActions.loadUserVirtualBots,
+  on(BotActions.login,
     BotActions.loadAccessPoints,
     BotActions.loadAllBrokers,
     BotActions.loadAllMarkets,
@@ -170,7 +174,7 @@ export const BotReducer = createReducer(
   on(BotActions.loadRanking, (state): BotState => {
       return {
         ...state,
-        loadingRanking: true,
+        rankingLoading: true,
         error: ''
       };
   }),
@@ -178,14 +182,14 @@ export const BotReducer = createReducer(
     return {
       ...state,
       botRanking: action.botRanking,
-      loadingRanking: false,
+      rankingLoading: false,
       error: ''
     };
   }),
   on(BotAPIActions.loadRankingFailure, (state, action) => {
     return {
       ...state,
-      loadingRanking: false,
+      rankingLoading: false,
       error: action.error
     };
   }),
@@ -213,21 +217,47 @@ export const BotReducer = createReducer(
       error: ''
     };
   }),
+  on(BotActions.loadUserBots, (state, action): BotState => {
+    return {
+      ...state,
+      userBotListLoading: true,
+    };
+}),
   on(BotAPIActions.loadUserBotsSuccess, (state, action): BotState => {
       return {
         ...state,
         userBotList: action.userBotDetails,
-        loading: false,
+        userBotListLoading: false,
         reloadData: false,
         error: ''
       };
+  }),
+  on(BotAPIActions.loadUserBotsFailure, (state, action): BotState => {
+    return {
+      ...state,
+      userBotListLoading: false,
+      reloadData: false,
+      error: action.error
+    };
+  }),
+  on(BotActions.loadUserVirtualBots, (state, action): BotState => {
+    return {
+      ...state,
+      userVirtualBotListLoading: true,
+    };
   }),
   on(BotAPIActions.loadUserVirtualBotsSuccess, (state, action): BotState => {
     return {
       ...state,
       userVirtualBotList: action.userVirtualBotList,
-      loading: false,
-      error: ''
+      userVirtualBotListLoading: false,
+    };
+  }),
+  on(BotAPIActions.loadUserVirtualBotsFailure, (state, action): BotState => {
+    return {
+      ...state,
+      userVirtualBotListLoading: false,
+      error: action.error
     };
   }),
   on(BotAPIActions.loadUserDetailSuccess, (state, action): BotState => {
@@ -239,12 +269,25 @@ export const BotReducer = createReducer(
       error: ''
     };
   }),
+  on(BotActions.loadStrategies, (state, action): BotState => {
+    return {
+      ...state,
+      strategiesLoading: true,
+    };
+  }),
   on(BotAPIActions.loadStrategiesSuccess, (state, action): BotState => {
     return {
       ...state,
       strategies: action.strategies,
-      loading: false,
+      strategiesLoading: false,
       error: ''
+    };
+  }),
+  on(BotAPIActions.loadStrategiesFailure, (state, action): BotState => {
+    return {
+      ...state,
+      strategiesLoading: false,
+      error: action.error
     };
   }),
   on(BotActions.loadIndicatorDescriptions, (state): BotState => {
@@ -289,10 +332,13 @@ export const BotReducer = createReducer(
       botProfitData: [],
       botSettings: [],
       userBotList: [],
+      userVirtualBotListLoading: false,
       userVirtualBotList: [],
+      userBotListLoading: false,
       botRanking: [],
-      loadingRanking: false,
+      rankingLoading: false,
       strategies: [],
+      strategiesLoading: false,
       activeTrades: [],
       historyTrades: [],
       activeTradesCount: null,
@@ -311,10 +357,7 @@ export const BotReducer = createReducer(
       reloadHistoryTrades: false
     };
   }),
-  on(BotAPIActions.loadUserBotsFailure,
-    BotAPIActions.loginFailure,
-    BotAPIActions.loadUserVirtualBotsFailure,
-    BotAPIActions.loadStrategiesFailure,
+  on(BotAPIActions.loginFailure,
     BotAPIActions.loadAllBrokersFailure,
     BotAPIActions.loadAllMarketsFailure,
     BotAPIActions.loadBrokerMarketsFailure,

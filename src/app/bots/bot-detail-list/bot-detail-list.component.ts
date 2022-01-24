@@ -18,7 +18,7 @@ import { SubSink } from 'subsink';
   styles: []
 })
 export class BotDetailListComponent implements  OnInit, AfterViewInit {
-  loading$: Observable<boolean> = this.store.select(fromStore.BotSelectors.getLoading).pipe(delay(50));
+  loading$: Observable<boolean> = this.store.select(fromStore.BotSelectors.getUserBotsLoading).pipe(delay(50));
   reloadData$: Observable<boolean> = this.store.select(fromStore.BotSelectors.getReloadData).pipe(delay(50));
   bots$: Observable<BotDetail[]> = this.store.select(fromStore.BotSelectors.getUserBots);
   dataSource: MatTableDataSource<BotDetail>;

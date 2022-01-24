@@ -316,6 +316,7 @@ export class TradingViewChartComponent implements AfterViewInit, OnInit, OnDestr
     var container = document.getElementById('special_charts');
 
     var chartContainer = document.createElement('div');
+    chartContainer.setAttribute('id', id);
     container.appendChild(chartContainer);
 
     const chart = createChart(chartContainer, {
@@ -346,7 +347,7 @@ export class TradingViewChartComponent implements AfterViewInit, OnInit, OnDestr
     const resize = new ResizeObserver((entries) => {
       this.resize(id, chart)
     });
-    resize.observe(container);
+    resize.observe(chartContainer);
     return { chartContainer, chart };
   }
   

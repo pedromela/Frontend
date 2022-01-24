@@ -244,10 +244,10 @@ export class BotEffects {
                               let list = { list: pair.value.map(point => new LineDataUnit(point)), name: pair.key };
                               list.list.sort((a, b) => {
                                 if(a.time < b.time) {
-                                    return 1;
+                                    return -1;
                                 }
                                 else if(a.time > b.time) {
-                                    return -1;
+                                    return 1;
                                 }
                                 return 0;
                             });

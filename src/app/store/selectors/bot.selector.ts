@@ -40,7 +40,7 @@ export const getBotRanking = createSelector(
 
 export const getLoadingRanking = createSelector(
     getFeatureState,
-    state => state.loadingRanking
+    state => state.rankingLoading
 );
 
 export const getCurrentBot = createSelector(
@@ -178,9 +178,24 @@ export const getUserVirtualBots = createSelector(
     state => state.userVirtualBotList
 );
 
+export const getUserBotsLoading = createSelector(
+    getFeatureState,
+    state => state.userBotListLoading
+);
+
+export const getUserVirtualBotsLoading = createSelector(
+    getFeatureState,
+    state => state.userVirtualBotListLoading
+);
+
 export const getStrategies = createSelector(
     getFeatureState,
     state => state.strategies
+);
+
+export const getStrategiesLoading = createSelector(
+    getFeatureState,
+    state => state.strategiesLoading
 );
 
 export const getUserDetail = createSelector(
