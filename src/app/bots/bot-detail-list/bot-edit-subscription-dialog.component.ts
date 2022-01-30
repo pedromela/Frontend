@@ -14,7 +14,7 @@ import * as fromStore from 'src/app/store';
   })
   export class BotEditSubscriptionDialogComponent implements OnInit {
     loading$: Observable<boolean> = this.store.select(fromStore.BotSelectors.getLoading).pipe(delay(50));
-
+    loading = false;
     constructor(
       public dialogRef: MatDialogRef<BotEditSubscriptionDialogComponent>,
       @Inject(MAT_DIALOG_DATA) public data: BotDetail,
@@ -31,5 +31,9 @@ import * as fromStore from 'src/app/store';
     onSubmit(userBotRelation: UserBotRelation) {
       this.dialogRef.close();
       this.store.dispatch(fromStore.BotActions.loadCurrentBotSettings());
+    }
+
+    onLoading(loading: boolean) {
+      this.loading = loading;
     }
   }

@@ -27,7 +27,7 @@ export class ActiveTransactionListComponent implements  OnInit, AfterViewInit, O
   symbol1: string;
   symbol2: string;
 
-  displayedColumns: string[] = ['amount', 'amount2', 'type', 'price', 'date'];
+  displayedColumns: string[] = ['amount', 'amount2', 'type', 'price', 'lastProfitablePrice', 'date'];
   dataSource : MatTableDataSource<TransactionDetail>;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;

@@ -23,7 +23,7 @@ export class TradeHistoryComponent implements OnInit, AfterViewInit, OnDestroy {
   transactions$: Observable<TransactionDetail[]> = this.store.select(fromStore.BotSelectors.getCurrentBotHistoryTrades);
   currentBotId$: Observable<string> = this.store.select(fromStore.BotSelectors.getCurrentBotId);
 
-  displayedColumns: string[] = ['amount', 'amount2', 'type', 'price', 'date', 'state'];
+  displayedColumns: string[] = ['amount', 'amount2', 'type', 'price', 'lastProfitablePrice', 'date', 'state'];
   dataSource : MatTableDataSource<TransactionDetail>;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;

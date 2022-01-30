@@ -226,7 +226,7 @@ export const BotReducer = createReducer(
   on(BotAPIActions.loadUserBotsSuccess, (state, action): BotState => {
       return {
         ...state,
-        userBotList: action.userBotDetails,
+        userBotList: action.userBotDetails == null ? [] : action.userBotDetails,
         userBotListLoading: false,
         reloadData: false,
         error: ''
@@ -249,7 +249,7 @@ export const BotReducer = createReducer(
   on(BotAPIActions.loadUserVirtualBotsSuccess, (state, action): BotState => {
     return {
       ...state,
-      userVirtualBotList: action.userVirtualBotList,
+      userVirtualBotList: action.userVirtualBotList == null ? [] : action.userVirtualBotList,
       userVirtualBotListLoading: false,
     };
   }),

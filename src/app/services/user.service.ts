@@ -35,7 +35,6 @@ export class UserService {
     return this.http.post<any>(this.BaseURI + '/ApplicationUser/Login', formData)
     .pipe(
       retryWhen(genericRetryStrategy()),
-      catchError(error => of(error))
     );
   }
 
@@ -44,7 +43,6 @@ export class UserService {
       .pipe(
         map((userDetail) => userDetail as UserDetail),
         retryWhen(genericRetryStrategy()),
-        catchError(error => of(error))
       );
   }
 }

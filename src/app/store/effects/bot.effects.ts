@@ -269,9 +269,13 @@ export class BotEffects {
                 ofType(BotActions.loadCurrentBotSettings),
                 concatMap((action) => of(action).pipe(withLatestFrom(this.store.select(fromStore.BotSelectors.getCurrentBotId)))),
                 mergeMap(([, botId]) => this.botService.getBotSettings(botId).pipe(
-                    map((botSettings) => BotAPIActions.loadCurrentBotSettingsSuccess({ botSettings })),
-                    catchError((error) => of(BotAPIActions.loadCurrentBotSettingsFailure({ error })))
-                ))
+                    map((botSettings) => {
+                        return BotAPIActions.loadCurrentBotSettingsSuccess({ botSettings });
+                    }),
+                )),
+                catchError((error) => {
+                    return of(BotAPIActions.loadCurrentBotSettingsFailure({ error }));
+                })
             );
     });
 
@@ -360,8 +364,8 @@ export class BotEffects {
                         const subscriptionPackage = new SubscriptionPackage(isubscriptionPackage);
                         return BotAPIActions.loadUserDetailSuccess({ userDetail, subscriptionPackage });
                     }),
-                    catchError((error) => of(BotAPIActions.loadUserDetailFailure({ error })))
-                ))
+                )),
+                catchError((error) => of(BotAPIActions.loadUserDetailFailure({ error })))
             );
     });
 

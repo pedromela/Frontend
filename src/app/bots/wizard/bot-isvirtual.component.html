@@ -57,7 +57,12 @@
 </div>
 <div *ngIf="!hideSubmit"class="form-row">
     <div class="form-group col-md-8 offset-md-2">
-    <button type="submit" (click)="onSubmit()" class="btn btn-lg btn-block">Save</button>
+    <button 
+        type="submit" 
+        (click)="onSubmit()" 
+        class="btn btn-lg btn-block"
+        [disabled]="loading"
+    >Save</button>
     <!-- <button type="submit" class="btn btn-lg btn-block" [disabled]="_formModel.valid()">Save</button> -->
 
     </div>

@@ -7,7 +7,7 @@ import { SubscriptionPackage } from 'src/app/shared/models/subscription-package.
 import { BotDetail } from '../bot-detail-list/bot-detail.model';
 import { UserBotRelation } from '../bot-detail-list/user-bot-relation.model';
 import * as fromStore from 'src/app/store';
-import { switchMap, withLatestFrom } from 'rxjs/operators';
+import { switchMap, take, withLatestFrom } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -23,11 +23,14 @@ export class BotIsVirtualComponent implements  OnInit {
   @Input() public marketReadonly = false;
 
   @Output() public userBotRelationEvent = new EventEmitter<UserBotRelation>();
+  @Output() public userBotRelationLoadingEvent = new EventEmitter<boolean>();
+
+  loading = false;
 
   allMarkets$ = this.store.select(fromStore.BotSelectors.getAllMarkets);
   brokerMarkets$ = this.store.select(fromStore.BotSelectors.getBrokerMarkets);
   accessPoints$ : Observable<AccessPointDetail[]> = this.store.select(fromStore.BotSelectors.getAccessPoints);;
-  bots$: Observable<BotDetail[]> = this.store.select(fromStore.BotSelectors.getUserVirtualBots);
+  bots$: Observable<BotDetail[]> = this.store.select(fromStore.BotSelectors.getAllUserBots);
   subscriptionPackage$: Observable<SubscriptionPackage> = this.store.select(fromStore.BotSelectors.getSubscriptionPackage);
 
   _formModel: BotDetail = {
@@ -94,6 +97,8 @@ export class BotIsVirtualComponent implements  OnInit {
   }
 
   onSubmit() {
+    this.loading = true;
+    this.userBotRelationLoadingEvent.emit(true);
     this.error = null;
     this.bots$
     .pipe(
@@ -103,31 +108,34 @@ export class BotIsVirtualComponent implements  OnInit {
           return of(false);
         }
         return of(true);
-      })
-    )
-    .subscribe((result) => {
-      if(result) {
-        const userBotRelation:UserBotRelation = {
-          userId: null,
-          botId: this._formModel.id ? this._formModel.id : this._formModel.botId ? this._formModel.botId : "",
-          accessPointId: this._formModel.accessPointId ? this._formModel.accessPointId : "",
-          equityId: this._formModel.equityId ? this._formModel.equityId : "",
-          isVirtual: this._formModel.isVirtual ? true : false,
-          defaultTransactionAmount: this._formModel.defaultTransactionAmount ? this._formModel.defaultTransactionAmount : 0
-      };
-  
-      this.service.createUserBotRelation(userBotRelation)
-          .subscribe(res => {
-            this.addUserBotRelation(res as UserBotRelation);
-          },
-          err => {
-            console.log(err);
-            this.error = err.error;
-          }
-      );
+      }),
+      take(1)
+      )
+      .subscribe((result) => {
+        if(result) {
+          const userBotRelation:UserBotRelation = {
+            userId: null,
+            botId: this._formModel.id ? this._formModel.id : this._formModel.botId ? this._formModel.botId : "",
+            accessPointId: this._formModel.accessPointId ? this._formModel.accessPointId : "",
+            equityId: this._formModel.equityId ? this._formModel.equityId : "",
+            isVirtual: this._formModel.isVirtual ? true : false,
+            defaultTransactionAmount: this._formModel.defaultTransactionAmount ? this._formModel.defaultTransactionAmount : 0
+        };
+    
+        this.service.createUserBotRelation(userBotRelation)
+            .subscribe(res => {
+              this.addUserBotRelation(res as UserBotRelation);
+            },
+            err => {
+              console.log(err);
+              this.error = err.error;
+            }
+        );
       } else {
         this.toastr.warning('You\'ve reached your max allowed bot count.', 'Active bots');
       }
+      this.userBotRelationLoadingEvent.emit(false);
+      this.loading = false;
     });
   }
 

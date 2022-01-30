@@ -178,6 +178,14 @@ export const getUserVirtualBots = createSelector(
     state => state.userVirtualBotList
 );
 
+export const getAllUserBots = createSelector(
+    getFeatureState,
+    state => {
+        const list = [...state.userBotList, ...state.userVirtualBotList];
+        return list;
+    }
+);
+
 export const getUserBotsLoading = createSelector(
     getFeatureState,
     state => state.userBotListLoading

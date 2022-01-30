@@ -25,6 +25,11 @@
             <th mat-header-cell *matHeaderCellDef> Price </th>
             <td mat-cell *matCellDef="let transaction"> {{transaction.price}} </td>
             </ng-container>
+
+            <ng-container matColumnDef="lastProfitablePrice">
+              <th mat-header-cell *matHeaderCellDef> Last Profitable Price </th>
+              <td mat-cell *matCellDef="let transaction"> {{transaction.lastProfitablePrice}} </td>
+            </ng-container>
         
             <ng-container matColumnDef="date">
             <th mat-header-cell *matHeaderCellDef> Date </th>

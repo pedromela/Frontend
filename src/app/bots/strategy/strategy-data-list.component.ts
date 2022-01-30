@@ -22,7 +22,8 @@ export class StrategyDetailListComponent implements  OnInit, AfterViewInit {
   @ViewChild(MatSort) sort: MatSort;
 
   strategies$: Observable<StrategyData[]> = this.store.select(fromStore.BotSelectors.getStrategies);
-  loading$: Observable<boolean> = this.store.select(fromStore.BotSelectors.getStrategiesLoading).pipe(delay(50));
+  loading$: Observable<boolean> = this.store.select(fromStore.BotSelectors.getStrategiesLoading
+    ).pipe(delay(50));
 
   dataSource: MatTableDataSource<StrategyData>;
   displayedColumns: string[] = [

@@ -41,15 +41,16 @@ export class BotDetailService {
     return this.http.get<BotDetail>(this.rootURL + '/BotParameters/' + botId)
     .pipe(
       retryWhen(genericRetryStrategy()),
-      catchError(error => of(error))
     );
   }
   
-  getBotSettings(botId): Observable<string[][]> {
+  getBotSettings(botId: string): Observable<string[][]> {
+    if (botId == null) {
+      return of([]);
+    }
     return this.http.get<string[][]>(this.rootURL + '/BotParameters/settings/' + botId)
     .pipe(
       retryWhen(genericRetryStrategy()),
-      catchError(error => of(error))
     );
   }
 
