@@ -454,7 +454,7 @@ export class TradingViewChartComponent implements AfterViewInit, OnInit, OnDestr
   private AddLine(indicatorSeries: IndicatorSeries, counter: number, chartContainer: HTMLElement, chart: IChartApi) {
     const color = this.candleService.getRandomColor();
     const series = chart.addLineSeries({
-      color: color
+      color: color,
     });
     this.indicatorSeries.push(series);
     series.setData(indicatorSeries.list);

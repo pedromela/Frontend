@@ -478,8 +478,8 @@ export const BotReducer = createReducer(
     };
   }),
   on(BotAPIActions.loadCurrentBotProfitSuccess, (state, action): BotState => {
-    const activeTrades = action.botProfitSettings.find((setting) => setting[0] === 'Active trades');
-    const historyTrades = action.botProfitSettings.find((setting) => setting[0] === 'Positions');
+    const activeTrades = action.botProfitSettings?.find((setting) => setting[0] === 'Active trades');
+    const historyTrades = action.botProfitSettings?.find((setting) => setting[0] === 'Positions');
     const activeTradesCount = +activeTrades[1];
     const historyTradesCount = +historyTrades[1];
     const reloadActiveTrades = activeTradesCount === state.activeTradesCount ? false : true;
